@@ -1,12 +1,11 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MovieList from "./src/screens/MovieList";
 import HomeScreen from "./src/screens/HomeScreen";
 import RegisterScreen from "./src/screens/RegisterScreen";
 import React, { useEffect, useState } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
-import { View,Text } from "react-native"
+import { View, Text } from "react-native"
 
 const Stack = createNativeStackNavigator()
 export default function App() {
@@ -48,6 +47,8 @@ export default function App() {
           :
           <Stack.Screen name='Register' component={RegisterScreen} options={{ title: 'Register', headerStyle: { backgroundColor: '£202328' }, headerTintColor: '£fff', headerTitleAlign: "center" }} />
         } */}
+        <Stack.Screen name='Register' component={RegisterScreen} options={{ title: 'Register', headerStyle: { backgroundColor: '£202328' }, headerTintColor: '£fff', headerTitleAlign: "center" }} />
+
       </Stack.Navigator>
     </NavigationContainer>
   )
