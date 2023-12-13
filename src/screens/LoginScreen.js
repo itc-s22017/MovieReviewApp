@@ -1,33 +1,27 @@
 import React, { useContext, useState } from 'react';
-import { auth } from '../../firebase';
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import {
     View,
     TextInput,
     Text,
+    TouchableOpacity,
     KeyboardAvoidingView,
-    Pressable,
-    Alert
 } from 'react-native';
+import { auth } from '../../firebase';
 import { UserContext } from '../context/UserContext';
-const RegisterScreen = ({ navigation }) => {
+
+const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
-
     const { setUser } = useContext(UserContext)
 
-
-    const handleRegister = async () => {
+    const handleLogin = async () => {
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
-
-            await updateProfile(user, { displayName: name });
-            setUser(user);
-            // navigation.goBack()
+            const user = await signInWithEmailAndPassword(auth, email, password);
+            console.log(user)
+            setUser(user.user)
         } catch (error) {
-
+            console.log(error.message);
         }
     };
 
@@ -40,22 +34,7 @@ const RegisterScreen = ({ navigation }) => {
                 flex: 1,
             }}
         >
-            <Text style={{ fontSize: 20, marginBottom: 20 }}>ユーザ登録画面</Text>
-            <View style={{ marginBottom: 20 }}>
-                <TextInput
-                    style={{
-                        width: 250,
-                        borderWidth: 1,
-                        padding: 5,
-                        borderColor: 'gray',
-                    }}
-                    onChangeText={setName}
-                    value={name}
-                    placeholder="名前（表示名）"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                />
-            </View>
+            <Text style={{ fontSize: 20, marginBottom: 20 }}>ログイン画面</Text>
             <View style={{ marginBottom: 20 }}>
                 <TextInput
                     style={{
@@ -86,19 +65,25 @@ const RegisterScreen = ({ navigation }) => {
                     autoCapitalize="none"
                 />
             </View>
-            <Pressable
+            <TouchableOpacity
                 style={{
                     padding: 10,
                     backgroundColor: '#88cb7f',
                     borderRadius: 10,
                 }}
-                onPress={handleRegister}
-                disabled={!email || !password}
+                onPress={handleLogin}
+            // disabled={!email || !password}
             >
-                <Text style={{ color: 'white' }}>登録する</Text>
-            </Pressable>
+                <Text style={{ color: 'white' }}>ログイン</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={{ marginTop: 10 }}
+                onPress={() => navigation.navigate('Register')}
+            >
+                <Text>ユーザ登録はこちら</Text>
+            </TouchableOpacity>
         </KeyboardAvoidingView>
     );
 };
 
-export default RegisterScreen
+export default LoginScreen;
