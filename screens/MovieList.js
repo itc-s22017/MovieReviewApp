@@ -50,7 +50,7 @@ export default function MovieList({navigation}) {
   return (
     <ScrollView style={style.container}>
       <View style={style.pickupContainer}>
-        <Image style={style.pickupImage} source={{uri:`https://image.tmdb.org/t/p/w780${picupMovies.poster_path}`}}></Image>
+        <Image style={style.pickupImage} resizeMode="contain" source={{uri:`https://image.tmdb.org/t/p/w780${picupMovies.poster_path}`}}></Image>
         <Text style={style.pickupTitle}>{picupMovies.title}</Text>
       </View>
 
@@ -137,7 +137,6 @@ const style = StyleSheet.create ({
     justifyContent: 'center',
     },
     pickupImage: {
-    backgroundColor: 'gray',
     height: 350, 
     width: '45%'
     },

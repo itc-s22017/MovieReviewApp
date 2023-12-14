@@ -11,16 +11,18 @@ export default function App() {
         <Stack.Screen name="MovieList" component={MovieList} options={{
           title: "映画一覧",
           headerStyle: {
-            backgroundColor: "#202328"
+            backgroundColor: "#202328",
           },
-          headerTintColor: "#fff"
+          headerTintColor: "#fff",
+          headerTitleAlign: "center"
         }}></Stack.Screen>
         <Stack.Screen name="MovieDetail" component={MovieDetail} options={{
           title: "映画詳細",
           headerStyle: {
             backgroundColor: "#202328"
           },
-          headerTintColor: "#fff"
+          headerTintColor: "#fff",
+          headerTitleAlign: "center"
         }}></Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
