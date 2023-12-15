@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MovieList from "./screens/MovieList";
 import MovieDetail from "./screens/MovieDetail";
 import  Ionicons  from '@expo/vector-icons/Ionicons';
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, StyleSheet } from "react-native";
 import SearchMovie from "./screens/SearchMovie";
 
 const Stack = createNativeStackNavigator();
@@ -20,7 +20,7 @@ export default function App() {
           headerTitleAlign: "center",
           headerRight: () => (
             <TouchableOpacity onPress={() => navigation.navigate('SearchMovie') }>
-              <Ionicons name="search" size={24} color="#ccc" />
+              <Ionicons style={style.all} name="search" size={14} color="#ccc" />
             </TouchableOpacity>
           )
           })}></Stack.Screen>
@@ -44,4 +44,10 @@ export default function App() {
     </NavigationContainer>
   )
 };
+
+const style = StyleSheet.create({
+  all: {
+    // marginRight: 10
+  }
+})
 
