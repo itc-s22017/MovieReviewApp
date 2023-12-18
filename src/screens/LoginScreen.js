@@ -36,7 +36,7 @@ const LoginScreen = ({ navigation }) => {
             }}
         >
             <Text style={{ fontSize: 20, marginBottom: 20 }}>ログイン画面</Text>
-            <Text style={{ padding: 10 }} onPress={() => promptAsync({useProxy:true})}>Google Signin</Text>
+            <Text style={{ padding: 10 }} onPress={() => promptAsync()}>Google Signin</Text>
             <View style={{ marginBottom: 20 }}>
                 <TextInput
                     style={{

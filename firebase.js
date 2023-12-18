@@ -16,20 +16,17 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-// export let auth;
+export let auth;
 
-// if (Platform.OS === 'ios' || Platform.OS === 'android') {
-//     auth = initializeAuth(app, {
-//         persistence: getReactNativePersistence(ReactNativeAsyncStorage),
-//     });
-// } else {
-//     auth = initializeAuth(app, {
-//         persistence: [indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence],
-//         popupRedirectResolver: browserPopupRedirectResolver,
-//     });
-// }
+if (Platform.OS === 'ios' || Platform.OS === 'android') {
+    auth = initializeAuth(app, {
+        persistence: getReactNativePersistence(ReactNativeAsyncStorage),
+    });
+} else {
+    auth = initializeAuth(app, {
+        persistence: [indexedDBLocalPersistence, browserLocalPersistence, browserSessionPersistence],
+        popupRedirectResolver: browserPopupRedirectResolver,
+    });
+}
 
 // export const auth = getAuth(app);
-export const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-});
