@@ -1,9 +1,10 @@
-import { View, StyleSheet, TextInput, FlatList, TouchableOpacity, Image, Text } from "react-native"
+import { View, StyleSheet, TextInput, FlatList, TouchableOpacity, Text } from "react-native"
 import { useState } from "react"
 import  Ionicons  from '@expo/vector-icons/Ionicons';
 import { requests } from "../request";
 import axios from "axios"; 
-import Star from 'react-native-stars'
+import Poster from "../components/Poster";
+import Vote from "../components/Vote";
 
 export default function SearchMovie({navigation}) {
     const [text, onChangeText] = useState("");
@@ -43,19 +44,9 @@ export default function SearchMovie({navigation}) {
                 renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => navigation.navigate("MovieDetail", {movie: item})}>
                     <View style={style.movieContainer}>
-                    <Image style={style.movieImage} resizeMode="contain" source={{uri: `https://image.tmdb.org/t/p/w300${item.poster_path}`}}></Image>
+                    <Poster posterPath={item.poster_path} imageWidth={300} imageHeight={180}></Poster>
                     <Text numberOfLines={1} style={style.movieTitle}>{item.title}</Text>
-                    <View style={style.vote}>
-                        <Star
-                            default={(item.vote_average/2)}
-                            count={5}
-                            half={true}
-                            fullStar={<Ionicons name="star-sharp" style={style.star} />}
-                            emptyStar={<Ionicons name="star-outline" style={style.star} />}
-                            halfStar={<Ionicons name="star-half-sharp" style={style.star} />}
-                        />    
-                    <Text style={style.votaCount}>{item.vote_count}</Text>
-                    </View>
+                    <Vote vote_average={item.vote_average/2} vote_count={item.vote_count}></Vote>
                     <Text style={style.movieReleaseDate}>{item.release_date}</Text>
                 </View>
                 </TouchableOpacity>
@@ -96,25 +87,4 @@ const style = StyleSheet.create({
         color: '#ccc',
         marginBottom: 10
     },
-    movieImage: {
-        height: 180,
-        marginRight: 10,
-        // resizeMode: 'center'
-    },
-    vota: {
-        flexDirection: 'row',
-        marginTop: 10,
-        alignItems: 'center'
-    },
-    votaCount: {
-        color: '#ccc',
-        marginLeft: 3
-    },
-    star: {
-        color: 'yellow',
-        backgroundColor: 'transparent',
-        textShadowColor: 'black',
-        textShadowOffset: {width: 1, height: 1},
-        textShadowRadius: 2
-    }
 })
