@@ -7,13 +7,14 @@ import {
     TouchableOpacity,
     KeyboardAvoidingView,
 } from 'react-native';
+import * as Google from "expo-auth-session/providers/google"
 import { auth } from '../../firebase';
 import { UserContext } from '../context/UserContext';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { setUser } = useContext(UserContext)
+    const { setUser, promptAsync } = useContext(UserContext)
 
     const handleLogin = async () => {
         try {
@@ -35,6 +36,7 @@ const LoginScreen = ({ navigation }) => {
             }}
         >
             <Text style={{ fontSize: 20, marginBottom: 20 }}>ログイン画面</Text>
+            <Text style={{ padding: 10 }} onPress={() => promptAsync({useProxy:true})}>Google Signin</Text>
             <View style={{ marginBottom: 20 }}>
                 <TextInput
                     style={{
