@@ -11,6 +11,7 @@ import {
 import { AntDesign } from "@expo/vector-icons"
 import { auth } from '../../firebase';
 import { UserContext } from '../context/UserContext';
+import { showAlert } from "../utils/showAlert"
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -21,11 +22,8 @@ const LoginScreen = ({ navigation }) => {
         try {
             const user = await signInWithEmailAndPassword(auth, email, password);
             if (!user.user.emailVerified) {
-                console.log('email ver');
-                Alert.alert('Alert Title', 'My Alert Msg', [
-                    { text: 'OK', onPress: () => console.log('OK Pressed') },
-                ]);
-                return;
+                showAlert('認証を完了してください','メールを確認してください')
+                return
             }
             console.log(user)
             setUser(user.user)

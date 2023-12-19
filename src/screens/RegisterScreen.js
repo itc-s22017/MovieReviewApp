@@ -10,6 +10,7 @@ import {
     Alert
 } from 'react-native';
 import { UserContext } from '../context/UserContext';
+import { showAlert } from '../utils/showAlert';
 const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -32,9 +33,8 @@ const RegisterScreen = ({ navigation }) => {
     const EmailVerification = async (user) => {
         try {
             await sendEmailVerification(user);
-            Alert.alert('Alert Title', 'My Alert Msg', [
-                {text: 'OK', onPress: () => console.log('OK Pressed')},
-              ]);
+            showAlert('認証を完了してください','メールを送信しました')
+            navigation.goBack()
         } catch (error) {
             console.error("確認メールの送信エラー:", error.message);
         }
