@@ -1,18 +1,24 @@
 import { initializeApp } from "firebase/app"
-import { getAuth } from "firebase/auth"
 import { initializeAuth, getReactNativePersistence, browserLocalPersistence, browserPopupRedirectResolver, browserSessionPersistence, indexedDBLocalPersistence } from 'firebase/auth'
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from "react-native";
-// import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+import {
+    API_KEY_FIREBASE,
+    AUTH_DOMAIN,
+    PROJECT_ID,
+    STORAGE_BUCKET,
+    MESSAGING_SENDER_ID,
+    APP_ID
+} from '@env'
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC5doNXoMierYztCxmrcJMM9VqKH57tkcU",
-  authDomain: "movieapp-19fc6.firebaseapp.com",
-  projectId: "movieapp-19fc6",
-  storageBucket: "movieapp-19fc6.appspot.com",
-  messagingSenderId: "981373992894",
-  appId: "1:981373992894:web:e0da77826fdb760d1a83ef"
+    apiKey: API_KEY_FIREBASE,
+    authDomain: AUTH_DOMAIN,
+    projectId: PROJECT_ID,
+    storageBucket: STORAGE_BUCKET,
+    messagingSenderId: MESSAGING_SENDER_ID,
+    appId: APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
