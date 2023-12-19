@@ -6,8 +6,10 @@ import {
     Text,
     TouchableOpacity,
     KeyboardAvoidingView,
+    Button,
+    Pressable
 } from 'react-native';
-import * as Google from "expo-auth-session/providers/google"
+import { Ionicons, AntDesign } from "@expo/vector-icons"
 import { auth } from '../../firebase';
 import { UserContext } from '../context/UserContext';
 
@@ -36,7 +38,24 @@ const LoginScreen = ({ navigation }) => {
             }}
         >
             <Text style={{ fontSize: 20, marginBottom: 20 }}>ログイン画面</Text>
-            <Text style={{ padding: 10 }} onPress={() => promptAsync()}>Google Signin</Text>
+
+            <Pressable
+                style={{
+                    backgroundColor: "#4285F4",
+                    width: 250,
+                    padding: 10,
+                    borderRadius: 15,
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 15,
+                }}
+                onPress={() => promptAsync()}
+            >
+                <AntDesign name='google' size={30} color='white' />
+                <Text style={{ fontWeight: "bold", color: 'white', fontSize: 17 }}>Sign In with Google</Text>
+            </Pressable>
+            <Text style={{ color: 'gray', fontSize: 18, padding: 12 }}>又は</Text>
             <View style={{ marginBottom: 20 }}>
                 <TextInput
                     style={{
@@ -67,7 +86,7 @@ const LoginScreen = ({ navigation }) => {
                     autoCapitalize="none"
                 />
             </View>
-            <TouchableOpacity
+            <Pressable
                 style={{
                     padding: 10,
                     backgroundColor: '#88cb7f',
@@ -77,13 +96,13 @@ const LoginScreen = ({ navigation }) => {
             // disabled={!email || !password}
             >
                 <Text style={{ color: 'white' }}>ログイン</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
                 style={{ marginTop: 10 }}
                 onPress={() => navigation.navigate('Register')}
             >
                 <Text>ユーザ登録はこちら</Text>
-            </TouchableOpacity>
+            </Pressable>
         </KeyboardAvoidingView>
     );
 };
