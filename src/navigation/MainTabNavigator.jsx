@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { UserScreen } from "../screens/UserScreen";
 import { HomeStackNavigator } from "./HomeStackNavigator";
 import SearchMovie from "../screens/SearchMovie";
+import { SearchForBottom } from "./SearchAndDetailNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -13,6 +14,7 @@ export const MainTabNavigator = () => {
         tabBarActiveTintColor: "blue",
         tabBarInactiveTintColor: "gray",
       }}
+      initialRouteName="Home"
     >
       <Tab.Screen
         name="Home"
@@ -27,7 +29,7 @@ export const MainTabNavigator = () => {
       />
       <Tab.Screen
         name="検索"
-        component={SearchMovie}
+        component={SearchForBottom}
         options={{
           tabBarLabel: "検索",
           tabBarIcon: ({ color }) => (
@@ -37,7 +39,7 @@ export const MainTabNavigator = () => {
           headerTintColor:'white',
           headerStyle:{
             backgroundColor:'#202328'
-          }
+          },
         }}
       />
       <Tab.Screen
