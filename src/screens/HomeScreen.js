@@ -1,21 +1,25 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text,TouchableOpacity, Pressable } from 'react-native';
 import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
+import { UserContext } from '../context/UserContext';
 
 const HomeScreen = ({ navigation }) => {
+  const { setUser } = useContext(UserContext)
+
 
     const handleLogout = () => {
         signOut(auth)
           .then(() => {
             console.log('logout');
+            setUser(null)
           })
           .catch((error) => {
             console.log(error.message);
           });
       };  return (
     <View>
-      <Text onPress={() => navigation.navigate("Register")}>ホーム画面</Text>
+      <Text>ホーム画面</Text>
       <Pressable
         onPress={handleLogout}
         style={{

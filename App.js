@@ -1,53 +1,57 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import MovieList from "./screens/MovieList";
-import MovieDetail from "./screens/MovieDetail";
-import  Ionicons  from '@expo/vector-icons/Ionicons';
-import { TouchableOpacity, StyleSheet } from "react-native";
-import SearchMovie from "./screens/SearchMovie";
+import React, { useEffect, useState } from 'react';
+import { AppNavigator } from "./src/navigation/AppNavigator";
+import { UserContext } from "./src/context/UserContext";
+import * as Google from "expo-auth-session/providers/google"
+import * as WebBrowser from 'expo-web-browser'
+import {WEB_CLIENTID,IOS_CLIENTID,ANDROID_CLIENTID} from '@env'
 
-const Stack = createNativeStackNavigator();
+import {
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithCredential
+} from "firebase/auth";
+import { auth } from "./firebase";
+import { Platform } from "react-native";
+
+WebBrowser.maybeCompleteAuthSession();
+
 export default function App() {
+  const [user, setUser] = useState(null)
+  const isWeb = Platform.OS === 'web';
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    webClientId: WEB_CLIENTID,
+    iosClientId: IOS_CLIENTID,
+    androidClientId: ANDROID_CLIENTID,
+    responseType: isWeb ? 'id_token' : 'code',
+  })
+
+  useEffect(() => {
+    if (response?.type == "success") {
+      const { id_token } = response.params
+      const credential = GoogleAuthProvider.credential(id_token)
+      signInWithCredential(auth, credential)
+    }
+  }, [response])
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (userData) => {
+      if (userData) {
+        console.log(JSON.stringify(userData, null, 2))
+        setUser(userData)
+      } else {
+        console.log('else')
+      }
+    })
+
+    return () => unsub();
+  }, [])
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="MovieList" component={MovieList} options={({navigation}) => ({
-          title: "映画一覧",
-          headerStyle: {
-            backgroundColor: "#202328",
-          },
-          headerTintColor: "#fff",
-          headerTitleAlign: "center",
-          headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate('SearchMovie') }>
-              <Ionicons style={style.all} name="search" size={14} color="#ccc" />
-            </TouchableOpacity>
-          )
-          })}></Stack.Screen>
-        <Stack.Screen name="MovieDetail" component={MovieDetail} options={{
-          title: "映画詳細",
-          headerStyle: {
-            backgroundColor: "#202328"
-          },
-          headerTintColor: "#fff",
-          headerTitleAlign: "center"
-        }} />
-        <Stack.Screen name="SearchMovie" component={SearchMovie} options={{
-          title: "映画検索",
-          headerStyle: {
-            backgroundColor: "#202328"
-          },
-          headerTintColor: "#fff",
-          headerTitleAlign: "center"
-        }} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserContext.Provider value={{ user, setUser, promptAsync }} >
+      <AppNavigator />
+    </UserContext.Provider>
   )
 };
 
-const style = StyleSheet.create({
-  all: {
-    marginRight: 10
-  }
-})
 
