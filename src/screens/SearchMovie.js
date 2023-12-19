@@ -1,20 +1,20 @@
 import { View, StyleSheet, TextInput, FlatList, TouchableOpacity, Text } from "react-native"
-import { useState } from "react"
-import  Ionicons  from '@expo/vector-icons/Ionicons';
+import { useEffect, useState } from "react"
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { requests } from "../../request";
-import axios from "axios"; 
+import axios from "axios";
 import Poster from "../../components/Poster";
 
-export default function SearchMovie({navigation}) {
+export default function SearchMovie({ navigation }) {
     const [text, onChangeText] = useState("");
     const [movies, setSearchMovies] = useState({});
     const numColumns = 3;
-    
+
     async function searchMovies() {
         try {
             const results = await axios.get(requests.SEARCH + text);
             setSearchMovies(results.data.results);
-        } catch(error) {
+        } catch (error) {
             console.log(error);
         }
     }
@@ -22,18 +22,18 @@ export default function SearchMovie({navigation}) {
     return (
         <View style={style.container}>
             <View style={style.searchForm}>
-            <Ionicons name="search" size={30} color="#ccc" />
-            <TextInput
-                style={style.imput}
-                onChangeText={text => onChangeText(text)}
-                value={text}
-                placeholder="映画名"
-                placeholderTextColor={'#ccc'}
-                keyboardAppearance="dark"
-                borderBottomWidth={1}
-                autoFocus={true}
-                onSubmitEditing={() => searchMovies()}
-            />
+                <Ionicons name="search" size={30} color="#ccc" />
+                <TextInput
+                    style={style.imput}
+                    onChangeText={text => onChangeText(text)}
+                    value={text}
+                    placeholder="映画名"
+                    placeholderTextColor={'#ccc'}
+                    keyboardAppearance="dark"
+                    borderBottomWidth={1}
+                    autoFocus={true}
+                    onSubmitEditing={() => searchMovies()}
+                />
             </View>
             <FlatList
                 data={movies}
@@ -41,13 +41,13 @@ export default function SearchMovie({navigation}) {
                 numColumns={numColumns}
                 flashScrollIndicators
                 renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => navigation.navigate("MovieDetail", {movie: item})}>
-                    <View style={style.movieContainer}>
-                    <Poster posterPath={item.poster_path} imageWidth={300} imageHeight={180}></Poster>
-                    <Text numberOfLines={1} style={style.movieTitle}>{item.title}</Text>
-                    <Text style={style.movieReleaseDate}>{item.release_date}</Text>
-                </View>
-                </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate("MovieDetail", { movie: item })}>
+                        <View style={style.movieContainer}>
+                            <Poster posterPath={item.poster_path} imageWidth={300} imageHeight={180}></Poster>
+                            <Text numberOfLines={1} style={style.movieTitle}>{item.title}</Text>
+                            <Text style={style.movieReleaseDate}>{item.release_date}</Text>
+                        </View>
+                    </TouchableOpacity>
                 )}>
             </FlatList>
         </View>
