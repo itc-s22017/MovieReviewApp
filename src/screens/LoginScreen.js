@@ -1,15 +1,14 @@
 import React, { useContext, useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import {
     View,
     TextInput,
     Text,
-    TouchableOpacity,
     KeyboardAvoidingView,
-    Button,
-    Pressable
+    Pressable,
+    Alert
 } from 'react-native';
-import { Ionicons, AntDesign } from "@expo/vector-icons"
+import { AntDesign } from "@expo/vector-icons"
 import { auth } from '../../firebase';
 import { UserContext } from '../context/UserContext';
 
@@ -21,6 +20,13 @@ const LoginScreen = ({ navigation }) => {
     const handleLogin = async () => {
         try {
             const user = await signInWithEmailAndPassword(auth, email, password);
+            if (!user.user.emailVerified) {
+                console.log('email ver');
+                Alert.alert('Alert Title', 'My Alert Msg', [
+                    { text: 'OK', onPress: () => console.log('OK Pressed') },
+                ]);
+                return;
+            }
             console.log(user)
             setUser(user.user)
         } catch (error) {
