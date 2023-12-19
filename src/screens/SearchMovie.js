@@ -30,7 +30,7 @@ export default function SearchMovie({navigation}) {
                 placeholder="映画名"
                 placeholderTextColor={'#ccc'}
                 keyboardAppearance="dark"
-                borderBottomWidth='1'
+                borderBottomWidth={1}
                 autoFocus={true}
                 onSubmitEditing={() => searchMovies()}
             />
