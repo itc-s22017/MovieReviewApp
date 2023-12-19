@@ -26,6 +26,7 @@ const style = StyleSheet.create({
     vote: {
         flexDirection: 'row',
         marginTop: 10,
+        paddingLeft: 10
     },
     voteCount: {
         color: '#ccc',

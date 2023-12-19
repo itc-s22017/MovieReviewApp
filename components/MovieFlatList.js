@@ -52,6 +52,7 @@ const style = StyleSheet.create ({
     },
     movieContainer: {
       width: 130,
+      marginRight: 10,
       marginBottom: 30
     },
     movieTitle: {

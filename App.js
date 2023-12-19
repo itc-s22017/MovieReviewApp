@@ -47,7 +47,7 @@ export default function App() {
 
 const style = StyleSheet.create({
   all: {
-    // marginRight: 10
+    marginRight: 10
   }
 })
 

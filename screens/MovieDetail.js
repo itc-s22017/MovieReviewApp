@@ -9,7 +9,7 @@ export default function MovieDetail(props) {
             <Poster posterPath={movie.poster_path} imageWidth={780} imageHeight={480}></Poster>
             <View>
                 <Text style={style.title}>{movie.title}</Text>
-                <Vote vote_average={movie.vote_average/2} vote_count={movie.vote_count}></Vote>
+                <Vote vote_average={movie.vote_average} vote_count={movie.vote_count}></Vote>
                 <Text style={style.movieReleaseDate}>{movie.release_date}</Text>
                 <Text style={style.overview}>{movie.overview}</Text>
             </View>
@@ -29,14 +29,18 @@ const style = StyleSheet.create({
     title: {
         color: '#fff',
         fontSize: 26,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        padding: 10
     },
     movieReleaseDate: {
         color: '#ccc',
-        marginBottom: 10
+        marginBottom: 10,
+        paddingLeft: 10
     },
     overview: {
         color: '#fff',
-        fontSize: 18
+        fontSize: 18,
+        padding: 10,
+        textAlign: 'justify'
     },
 });
