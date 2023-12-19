@@ -10,7 +10,7 @@ import {
 } from "firebase/auth";
 import { auth } from "./firebase";
 import { Platform } from "react-native";
-import { WEB_CLIENTID,IOS_CLIENTID,ANDROID_CLIENTID} from '@env'
+import { WEB_CLIENTID, IOS_CLIENTID, ANDROID_CLIENTID } from '@env'
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -35,16 +35,16 @@ export default function App() {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (userData) => {
-      if (userData) {
-        console.log(JSON.stringify(userData, null, 2))
-        setUser(userData)
-      } else {
-        console.log('else')
+      if (userData && userData.emailVerified) {
+        setUser(userData);
       }
-    })
-
+    });
+  
+    // useEffectのクリーンアップ関数を追加
     return () => unsub();
-  }, [])
+  }, []);
+
+
 
   return (
     <UserContext.Provider value={{ user, setUser, promptAsync }} >

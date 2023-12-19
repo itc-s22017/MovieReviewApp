@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { auth } from '../../firebase';
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth"
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth"
 import {
     View,
     TextInput,
@@ -10,6 +10,7 @@ import {
     Alert
 } from 'react-native';
 import { UserContext } from '../context/UserContext';
+import { showAlert } from '../utils/showAlert';
 const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -22,12 +23,20 @@ const RegisterScreen = ({ navigation }) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-
             await updateProfile(user, { displayName: name });
-            setUser(user);
-            // navigation.goBack()
+            await EmailVerification(user);
         } catch (error) {
+            console.log(`handleRegisterError:${error}`)
+        }
+    };
 
+    const EmailVerification = async (user) => {
+        try {
+            await sendEmailVerification(user);
+            showAlert('認証を完了してください','メールを送信しました')
+            navigation.goBack()
+        } catch (error) {
+            console.error("確認メールの送信エラー:", error.message);
         }
     };
 
