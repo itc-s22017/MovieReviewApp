@@ -4,7 +4,6 @@ import  Ionicons  from '@expo/vector-icons/Ionicons';
 import { requests } from "../../request";
 import axios from "axios"; 
 import Poster from "../../components/Poster";
-import Vote from "../../components/Vote";
 
 export default function SearchMovie({navigation}) {
     const [text, onChangeText] = useState("");
@@ -46,7 +45,6 @@ export default function SearchMovie({navigation}) {
                     <View style={style.movieContainer}>
                     <Poster posterPath={item.poster_path} imageWidth={300} imageHeight={180}></Poster>
                     <Text numberOfLines={1} style={style.movieTitle}>{item.title}</Text>
-                    <Vote vote_average={item.vote_average} vote_count={item.vote_count}></Vote>
                     <Text style={style.movieReleaseDate}>{item.release_date}</Text>
                 </View>
                 </TouchableOpacity>

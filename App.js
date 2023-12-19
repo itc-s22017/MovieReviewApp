@@ -3,8 +3,6 @@ import { AppNavigator } from "./src/navigation/AppNavigator";
 import { UserContext } from "./src/context/UserContext";
 import * as Google from "expo-auth-session/providers/google"
 import * as WebBrowser from 'expo-web-browser'
-import {WEB_CLIENTID,IOS_CLIENTID,ANDROID_CLIENTID} from '@env'
-
 import {
   GoogleAuthProvider,
   onAuthStateChanged,

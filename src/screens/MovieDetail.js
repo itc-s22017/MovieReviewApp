@@ -1,6 +1,6 @@
 import { Text, View, ScrollView, StyleSheet,} from "react-native";
 import Poster from "../../components/Poster";
-import Vote from "../../components/Vote";
+// import Vote from "../../components/Vote";
 
 export default function MovieDetail(props) {
     const {movie} = props.route.params;
@@ -9,7 +9,7 @@ export default function MovieDetail(props) {
             <Poster posterPath={movie.poster_path} imageWidth={780} imageHeight={480}></Poster>
             <View>
                 <Text style={style.title}>{movie.title}</Text>
-                <Vote vote_average={movie.vote_average} vote_count={movie.vote_count}></Vote>
+                {/* <Vote vote_average={movie.vote_average} vote_count={movie.vote_count}></Vote> */}
                 <Text style={style.movieReleaseDate}>{movie.release_date}</Text>
                 <Text style={style.overview}>{movie.overview}</Text>
             </View>
