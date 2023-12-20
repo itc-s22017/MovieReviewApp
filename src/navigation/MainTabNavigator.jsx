@@ -31,7 +31,6 @@ export const MainTabNavigator = () => {
         name="検索"
         component={SearchForBottom}
         options={{
-          tabBarLabel: "検索",
           tabBarIcon: ({ color }) => (
             <Feather name="search" color={color} size={26} />
           ),
@@ -40,6 +39,7 @@ export const MainTabNavigator = () => {
           headerStyle:{
             backgroundColor:'#202328'
           },
+          headerShown:false
         }}
       />
       <Tab.Screen

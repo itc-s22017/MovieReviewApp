@@ -1,10 +1,16 @@
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import Poster from "../../components/Poster";
 import { AntDesign } from '@expo/vector-icons';
+import { useEffect } from "react";
 
 
-export default function MovieDetail(props) {
-    const { movie } = props.route.params;
+export default function MovieDetail({ route, navigation }) {
+    const { movie } = route.params;
+    useEffect(() => {
+        navigation.setOptions({
+            title: movie.title
+        })
+    }, [movie])
     return (
         <>
             <ScrollView style={style.container}>
@@ -16,7 +22,7 @@ export default function MovieDetail(props) {
                 </View>
             </ScrollView>
             <View style={style.container2}>
-                <TouchableOpacity style={style.button}>
+                <TouchableOpacity style={style.button} onPress={() => { navigation.navigate('CreateReviewScreen', { movie }) }}>
                     <AntDesign name="pluscircleo" size={24} color="white" />
                 </TouchableOpacity>
             </View>
@@ -56,7 +62,7 @@ const style = StyleSheet.create({
         bottom: 10,
     },
     button: {
-        backgroundColor:'blue',
+        backgroundColor: 'blue',
         borderRadius: 30,
         width: 60,
         height: 60,
