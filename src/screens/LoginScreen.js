@@ -1,12 +1,12 @@
 import React, { useContext, useState } from 'react';
-import { signInWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 import {
     View,
     TextInput,
     Text,
     KeyboardAvoidingView,
     Pressable,
-    Alert
+    TouchableOpacity
 } from 'react-native';
 import { AntDesign } from "@expo/vector-icons"
 import { auth } from '../../firebase';
@@ -22,7 +22,7 @@ const LoginScreen = ({ navigation }) => {
         try {
             const user = await signInWithEmailAndPassword(auth, email, password);
             if (!user.user.emailVerified) {
-                showAlert('認証を完了してください','メールを確認してください')
+                showAlert('認証を完了してください', 'メールを確認してください')
                 return
             }
             console.log(user)
@@ -90,17 +90,18 @@ const LoginScreen = ({ navigation }) => {
                     autoCapitalize="none"
                 />
             </View>
-            <Pressable
+            <TouchableOpacity
                 style={{
                     padding: 10,
                     backgroundColor: '#88cb7f',
                     borderRadius: 10,
                 }}
                 onPress={handleLogin}
-            // disabled={!email || !password}
+                activeOpacity={0.6}
+                disabled={!email || !password}
             >
                 <Text style={{ color: 'white' }}>ログイン</Text>
-            </Pressable>
+            </TouchableOpacity>
             <Pressable
                 style={{ marginTop: 10 }}
                 onPress={() => navigation.navigate('Register')}
@@ -112,3 +113,4 @@ const LoginScreen = ({ navigation }) => {
 };
 
 export default LoginScreen;
+

@@ -6,8 +6,7 @@ import {
     TextInput,
     Text,
     KeyboardAvoidingView,
-    Pressable,
-    Alert
+    TouchableOpacity
 } from 'react-native';
 import { UserContext } from '../context/UserContext';
 import { showAlert } from '../utils/showAlert';
@@ -95,7 +94,7 @@ const RegisterScreen = ({ navigation }) => {
                     autoCapitalize="none"
                 />
             </View>
-            <Pressable
+            <TouchableOpacity
                 style={{
                     padding: 10,
                     backgroundColor: '#88cb7f',
@@ -105,7 +104,7 @@ const RegisterScreen = ({ navigation }) => {
                 disabled={!email || !password}
             >
                 <Text style={{ color: 'white' }}>登録する</Text>
-            </Pressable>
+            </TouchableOpacity>
         </KeyboardAvoidingView>
     );
 };
