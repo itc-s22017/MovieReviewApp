@@ -8,7 +8,7 @@ import CreateReviewScreen from "../screens/CreateReviewScreen";
 const Stack = createStackNavigator();
 const RootStack = createStackNavigator();
 
-export const SearchForBottom = () => {
+const SearchForBottom = () => {
     return (
         <Stack.Navigator>
             <Stack.Screen
@@ -20,7 +20,7 @@ export const SearchForBottom = () => {
                     },
                     headerTintColor: "#fff",
                     headerTitleAlign: "center",
-                    title:'映画検索'
+                    title: '映画検索'
                     // headerShown: false,
                 }}
             />
@@ -36,6 +36,19 @@ export const SearchForBottom = () => {
                     // headerShown:false
                 }}
             />
+
+        </Stack.Navigator>
+    );
+};
+
+export const SearchAndDetail = () => (
+    <RootStack.Navigator>
+        <RootStack.Group screenOptions={{ presentation: "modal" }}>
+            <RootStack.Screen
+                name="SearchForBottom"
+                component={SearchForBottom}
+                options={{ headerShown: false }}
+            />
             <Stack.Screen
                 name="CreateReviewScreen"
                 component={CreateReviewScreen}
@@ -48,9 +61,10 @@ export const SearchForBottom = () => {
                     // headerShown: false,
                 }}
             />
-        </Stack.Navigator>
-    );
-};
+        </RootStack.Group>
+    </RootStack.Navigator>
+);
+
 
 const style = StyleSheet.create({
     all: {
