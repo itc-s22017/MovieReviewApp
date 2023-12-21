@@ -65,7 +65,7 @@ const CreateReviewScreen = ({ route, navigation }) => {
 
 const style = StyleSheet.create({
     textSize: {
-        fontFamily: 'bold',
+        fontWeight: 'bold',
         fontSize: 29
     },
     container: {
@@ -74,7 +74,7 @@ const style = StyleSheet.create({
         margin: 10,
     },
     title: {
-        fontFamily: 'bold',
+        fontWeight: 'bold',
         fontSize: 20,
         margin: 10,
     },
