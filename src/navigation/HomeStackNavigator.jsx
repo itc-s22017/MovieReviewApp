@@ -5,6 +5,7 @@ import MovieDetail from "../screens/MovieDetail";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import SearchMovie from "../screens/SearchMovie";
+import CreateReviewScreen from "../screens/CreateReviewScreen";
 
 const Stack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -72,7 +73,16 @@ export const HomeStackNavigator = () => (
         component={MainStack}
         options={{ headerShown: false }}
       />
-      {/* <RootStack.Screen name="CreateReview" component={CreateReviewScreen} /> */}
+      <RootStack.Screen
+        name="CreateReviewScreen"
+        component={CreateReviewScreen} options={{
+          headerStyle: {
+            backgroundColor: "#202328",
+          },
+          headerTintColor: "#fff",
+          headerTitleAlign: "center",
+          // headerShown: false,
+        }} />
     </RootStack.Group>
   </RootStack.Navigator>
 );

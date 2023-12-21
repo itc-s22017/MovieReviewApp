@@ -1,19 +1,32 @@
-import { Text, View, ScrollView, StyleSheet,} from "react-native";
+import { Text, View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import Poster from "../../components/Poster";
-// import Vote from "../../components/Vote";
+import { AntDesign } from '@expo/vector-icons';
+import { useEffect } from "react";
 
-export default function MovieDetail(props) {
-    const {movie} = props.route.params;
+
+export default function MovieDetail({ route, navigation }) {
+    const { movie } = route.params;
+    useEffect(() => {
+        navigation.setOptions({
+            title: movie.title
+        })
+    }, [movie])
     return (
-        <ScrollView style={style.container}>
-            <Poster posterPath={movie.poster_path} imageWidth={780} imageHeight={480}></Poster>
-            <View>
-                <Text style={style.title}>{movie.title}</Text>
-                {/* <Vote vote_average={movie.vote_average} vote_count={movie.vote_count}></Vote> */}
-                <Text style={style.movieReleaseDate}>{movie.release_date}</Text>
-                <Text style={style.overview}>{movie.overview}</Text>
+        <>
+            <ScrollView style={style.container}>
+                <Poster posterPath={movie.poster_path} imageWidth={780} imageHeight={480}></Poster>
+                <View>
+                    <Text style={style.title}>{movie.title}</Text>
+                    <Text style={style.movieReleaseDate}>{movie.release_date}</Text>
+                    <Text style={style.overview}>{movie.overview}</Text>
+                </View>
+            </ScrollView>
+            <View style={style.container2}>
+                <TouchableOpacity style={style.button} onPress={() => { navigation.navigate('CreateReviewScreen', { movie }) }}>
+                    <AntDesign name="pluscircleo" size={24} color="white" />
+                </TouchableOpacity>
             </View>
-        </ScrollView>
+        </>
     );
 }
 
@@ -23,7 +36,7 @@ const style = StyleSheet.create({
         backgroundColor: '#202328'
     },
     textBox: {
-        paddingHorizontal:30,
+        paddingHorizontal: 30,
         paddingVertical: 5
     },
     title: {
@@ -43,4 +56,18 @@ const style = StyleSheet.create({
         padding: 10,
         textAlign: 'justify'
     },
+    container2: {
+        position: 'absolute',
+        right: 16,
+        bottom: 10,
+    },
+    button: {
+        backgroundColor: 'blue',
+        borderRadius: 30,
+        width: 60,
+        height: 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
+
