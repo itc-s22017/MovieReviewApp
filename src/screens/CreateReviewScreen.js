@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
     View,
     Text,
@@ -9,8 +9,12 @@ import {
     ScrollView,
     Pressable
 } from 'react-native'
+import { UserContext } from '../context/UserContext';
+import { getFirestore, collection, addDoc, Timestamp } from 'firebase/firestore';
+
 
 const CreateReviewScreen = ({ route, navigation }) => {
+    const { setUser, user } = useContext(UserContext)
     const { movie } = route.params;
     const [isEnabled, setIsEnabled] = useState(false);
     const [text, setText] = useState('');
@@ -19,6 +23,24 @@ const CreateReviewScreen = ({ route, navigation }) => {
     const handleInputChange = (inputText) => {
         setText(inputText);
     };
+
+    const createReview = async () => {
+        try {
+            const firestore = getFirestore();
+            await addDoc(collection(firestore, 'reviews'), {
+                UserId: user.uid,
+                MovieId: movie.id,
+                Content: text,
+                Star: 5,
+                Create_at: Timestamp.now(),
+                Netabare: isEnabled,
+                name: user.displayName,
+            });
+            navigation.goBack();
+        } catch (e) {
+            console.error('Error adding document: ', e);
+        }
+    }
 
     useEffect(() => {
         navigation.setOptions({
@@ -56,7 +78,7 @@ const CreateReviewScreen = ({ route, navigation }) => {
                     />
                 </View>
                 <Pressable style={style.button} onPress={() => { }}>
-                    <Text style={style.text}>投稿する</Text>
+                    <Text style={style.text} onPress={createReview}>投稿する</Text>
                 </Pressable>
             </ScrollView>
         </KeyboardAvoidingView>
@@ -111,7 +133,7 @@ const style = StyleSheet.create({
         borderRadius: 4,
         elevation: 3,
         backgroundColor: 'blue',
-        marginTop:15
+        marginTop: 15
     },
     text: {
         fontSize: 16,
