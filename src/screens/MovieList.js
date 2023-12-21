@@ -1,26 +1,65 @@
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from "react-native"
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, RefreshControl } from "react-native"
 import {requests} from "../../request";
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import MovieFlatList from "../../components/MovieFlatList";
 
 export default function MovieList({navigation}) {
   const [picupMovies, setPicupMovies] = useState({});
+  const [refreshing, setRefreshing] = useState(false);
+
+  // const onRefresh = useCallback(() => {
+  //   setRefreshing(true);
+  //   setTimeout(() => {
+  //     setRefreshing(false);
+  //   }, 1000);
+  // }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+
+    try {
+      const result = await axios.get(requests.NOW_PLAYING);
+      const number = Math.floor(Math.random() * (result.data.results.length - 1) + 1);
+      setPicupMovies(result.data.results[number]);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const getPicUpMovies = async () => {
+    try {
+      const result = await axios.get(requests.NOW_PLAYING);
+      const number = Math.floor(Math.random() * (result.data.results.length - 1) + 1);
+      setPicupMovies(result.data.results[number]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    async function getPicUpMovies() {
-      try {
-        const result = await axios.get(requests.NOW_PLAYING);
-        const number = Math.floor(Math.random() * (result.data.results.length - 1) + 1);
-        setPicupMovies(result.data.results[number]);
-      } catch(error) {
-        console.log(error)
-      }
-    }
     getPicUpMovies();
   }, []);
+
+
+  // useEffect(() => {
+  //   async function getPicUpMovies() {
+  //     try {
+  //       const result = await axios.get(requests.NOW_PLAYING);
+  //       const number = Math.floor(Math.random() * (result.data.results.length - 1) + 1);
+  //       setPicupMovies(result.data.results[number]);
+  //     } catch(error) {
+  //       console.log(error)
+  //     }
+  //   }
+  //   getPicUpMovies();
+  // }, []);
+
+  
   return (
-    <ScrollView style={style.container}>
+    <ScrollView style={style.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
     <TouchableOpacity onPress={() => navigation.navigate("MovieDetail", {movie: picupMovies})}>
       <View style={style.pickupContainer}>
         <Image style={style.pickupImage} resizeMode="contain" source={{uri:`https://image.tmdb.org/t/p/w780${picupMovies.poster_path}`}}></Image>
