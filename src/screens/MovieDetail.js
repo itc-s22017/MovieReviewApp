@@ -1,16 +1,35 @@
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
 import Poster from "../../components/Poster";
 import { AntDesign } from '@expo/vector-icons';
-import { useEffect } from "react";
-
+import { useEffect, useState } from "react";
+import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import ReviewItem from "../../components/ReviewItem";
 
 export default function MovieDetail({ route, navigation }) {
     const { movie } = route.params;
+    const [reviews, setReviews] = useState([]);
+
     useEffect(() => {
         navigation.setOptions({
             title: movie.title
         })
     }, [movie])
+
+    useEffect(() => {
+        const getReviewsById = async () => {
+            try {
+                const db = getFirestore();
+                const reviewsRef = collection(db, 'reviews');
+                const q = query(reviewsRef, where('MovieId', '==', movie.id));
+                const querySnapshot = await getDocs(q);
+
+                setReviews(querySnapshot.docs.map(doc => doc.data()));
+            } catch (error) {
+                console.error('Error getting reviews:', error);
+            }
+        }
+        getReviewsById()
+    }, [])
     return (
         <>
             <ScrollView style={style.container}>
@@ -19,7 +38,11 @@ export default function MovieDetail({ route, navigation }) {
                     <Text style={style.title}>{movie.title}</Text>
                     <Text style={style.movieReleaseDate}>{movie.release_date}</Text>
                     <Text style={style.overview}>{movie.overview}</Text>
+                    <Text>{movie.id}</Text>
                 </View>
+                {reviews.map((review, index) => (
+                    <ReviewItem key={index} review={review} />
+                ))}
             </ScrollView>
             <View style={style.container2}>
                 <TouchableOpacity style={style.button} onPress={() => { navigation.navigate('CreateReviewScreen', { movie }) }}>
