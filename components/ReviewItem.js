@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
-import { getFirestore, getDoc, doc } from 'firebase/firestore';
 import { getAuth, getAdditionalUserInfo } from 'firebase/auth';
 import { auth } from "../firebase"
 import moment from "moment";
 import Stars from "./Stars"
 const ReviewItem = ({ review }) => {
-    
+    const userAvatarSource = review.userInfo.photoURL
+        ? { uri: review.userInfo.photoURL }
+        : require("../assets/icon.png");
 
     return (
         <View style={styles.container}>
@@ -14,9 +15,14 @@ const ReviewItem = ({ review }) => {
                 <View>
                     <Stars score={review.Star} starSize={16} textSize={12} />
                     <Text style={styles.reviewText}>{review.Content}</Text>
-                    
                 </View>
-                <Text style={styles.nameText}>{review.name}</Text>
+                <View style={styles.userInfoContainer}>
+                    <Image
+                        source={userAvatarSource}
+                        style={styles.userAvatar}
+                    />
+                    <Text style={styles.nameText}>{review.userInfo.displayName}</Text>
+                </View>
             </View>
         </View>
     );
@@ -27,24 +33,33 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         margin: 16,
+        borderWidth: 1,
+        borderColor: "#ddd",
+        borderRadius: 8,
+        padding: 16,
     },
     leftContainer: {
         flexDirection: "column",
         justifyContent: "space-between",
     },
-    rightContainer: {},
-    image: {
-        width: 100,
-        height: 100,
-    },
     reviewText: {
-        marginTop: 4,
-        color: "#000",
+        marginTop: 8,
+        color: "white",
+    },
+    userInfoContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginTop: 12,
+    },
+    userAvatar: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        marginRight: 8,
     },
     nameText: {
-        color: "#888",
-        fontSize: 12,
+        color: "white",
+        fontSize: 14,
     },
 });
-
 export default ReviewItem
