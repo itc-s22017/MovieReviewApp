@@ -11,6 +11,8 @@ import {
 import { auth } from "./firebase";
 import { Platform } from "react-native";
 import { WEB_CLIENTID, IOS_CLIENTID, ANDROID_CLIENTID } from '@env'
+import { getFirestore, getDoc, doc,setDoc } from 'firebase/firestore';
+
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -36,10 +38,32 @@ export default function App() {
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (userData) => {
       if (userData && userData.emailVerified) {
-        setUser(userData);
+        try {
+          const db = getFirestore();
+          const userDocRef = doc(db, 'users', userData.uid);
+          const userDocSnapshot = await getDoc(userDocRef);
+
+          if (!userDocSnapshot.exists()) {
+            const Data = {
+              displayName: userData.displayName,
+              email: userData.email,
+              photoURL:userData.photoURL,
+              uid:userData.uid,
+            };
+
+            await setDoc(userDocRef, Data);
+            setUser(userData);
+            console.log('新しいユーザーが登録されました', userData);
+          } else {
+            setUser(userData);
+            console.log('既に存在するユーザーです', userData);
+          }
+        } catch (error) {
+          console.error('ログインエラー:', error);
+        }
       }
     });
-  
+
     // useEffectのクリーンアップ関数を追加
     return () => unsub();
   }, []);

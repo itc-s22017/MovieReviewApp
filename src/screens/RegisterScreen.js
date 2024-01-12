@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { auth } from '../../firebase';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth"
+import { getFirestore, getDoc, doc, setDoc } from 'firebase/firestore';
 import {
     View,
     TextInput,
@@ -24,6 +25,26 @@ const RegisterScreen = ({ navigation }) => {
             const user = userCredential.user;
             await updateProfile(user, { displayName: name });
             await EmailVerification(user);
+            try {
+                const db = getFirestore();
+                const userDocRef = doc(db, 'users', user.uid);
+                const userDocSnapshot = await getDoc(userDocRef);
+
+                if (!userDocSnapshot.exists()) {
+                    const Data = {
+                        displayName: user.displayName,
+                        email: user.email,
+                        photoURL: user.photoURL,
+                        uid:user.uid,
+                    };
+                    await setDoc(userDocRef, Data);
+                    console.log('新しいユーザーがRegister', user);
+                } else {
+                    console.log('既に存在するユーザーRegister', user);
+                }
+            } catch (error) {
+                console.error('ログインエラー:', error);
+            }
         } catch (error) {
             console.log(`handleRegisterError:${error}`)
         }
@@ -32,7 +53,7 @@ const RegisterScreen = ({ navigation }) => {
     const EmailVerification = async (user) => {
         try {
             await sendEmailVerification(user);
-            showAlert('認証を完了してください','メールを送信しました')
+            showAlert('認証を完了してください', 'メールを送信しました')
             navigation.goBack()
         } catch (error) {
             console.error("確認メールの送信エラー:", error.message);
