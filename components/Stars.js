@@ -42,10 +42,10 @@ const styles = StyleSheet.create({
     },
     star: {
         marginRight: 4,
-        color: "#900",
+        color: "yellow",
     },
     scoreText: {
-        color: "#000",
+        color: "white",
         fontWeight: "bold",
     },
 });

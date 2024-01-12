@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { View, Text,Pressable } from 'react-native'
 import { UserContext } from '../context/UserContext'
 import { signOut } from 'firebase/auth';
@@ -6,6 +6,10 @@ import { auth } from '../../firebase';
 
 export const UserScreen = () => {
   const { setUser,user } = useContext(UserContext)
+
+  // useEffect(()=>{
+  //   console.log(user)
+  // },[])
 
   const handleLogout = () => {
     signOut(auth)

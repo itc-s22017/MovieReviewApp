@@ -6,5 +6,6 @@ export const requests = {
     COMMING_SOON: `${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-us&page=1`,
     POPULARS: `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=en-us&page=1`,
     TOP_RATED: `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=en-us&page=1`,
-    SEARCH: `${BASE_URL}/search/movie?api_key=${API_KEY}&language=ja&page=1&include_adult=false&query=`
+    SEARCH: `${BASE_URL}/search/movie?api_key=${API_KEY}&language=ja&page=1&include_adult=false&query=`,
+    
 }
