@@ -2,7 +2,7 @@ import { Text, View, ScrollView, StyleSheet, TouchableOpacity } from "react-nati
 import Poster from "../../components/Poster";
 import { AntDesign } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, where, getDoc, doc } from 'firebase/firestore';
 import ReviewItem from "../../components/ReviewItem";
 
 export default function MovieDetail({ route, navigation }) {
@@ -23,7 +23,22 @@ export default function MovieDetail({ route, navigation }) {
                 const q = query(reviewsRef, where('MovieId', '==', movie.id));
                 const querySnapshot = await getDocs(q);
 
-                setReviews(querySnapshot.docs.map(doc => doc.data()));
+                // setReviews(querySnapshot.docs.map(doc => doc.data()));
+
+                const reviewsData = await Promise.all(querySnapshot.docs.map(async (dooc) => {
+                    const review = dooc.data();
+    
+                    const userDoc = await getDoc(doc(db, 'users', review.UserId));
+                    if (userDoc.exists()) {
+                        const userInfo = userDoc.data();
+                        return { ...review, userInfo };
+                    } else {
+                        console.log('User not found');
+                        return review;
+                    }
+                }));
+                setReviews(reviewsData)
+
             } catch (error) {
                 console.error('Error getting reviews:', error);
             }
@@ -38,7 +53,6 @@ export default function MovieDetail({ route, navigation }) {
                     <Text style={style.title}>{movie.title}</Text>
                     <Text style={style.movieReleaseDate}>{movie.release_date}</Text>
                     <Text style={style.overview}>{movie.overview}</Text>
-                    <Text>{movie.id}</Text>
                 </View>
                 {reviews.map((review, index) => (
                     <ReviewItem key={index} review={review} />

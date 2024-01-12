@@ -34,7 +34,6 @@ const CreateReviewScreen = ({ route, navigation }) => {
                 Star: 5,
                 Create_at: Timestamp.now(),
                 Netabare: isEnabled,
-                name: user.displayName,
             });
             navigation.goBack();
         } catch (e) {
