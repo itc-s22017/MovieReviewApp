@@ -1,14 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { View, StyleSheet, Text, Image } from "react-native";
-import { getAuth, getAdditionalUserInfo } from 'firebase/auth';
-import { auth } from "../firebase"
-import moment from "moment";
 import Stars from "./Stars"
 const ReviewItem = ({ review }) => {
     const userAvatarSource = review.userInfo.photoURL
         ? { uri: review.userInfo.photoURL }
-        : require("../assets/icon.png");
+        : { uri: 'https://sp-ao.shortpixel.ai/client/q_lossless,ret_img,w_250/https://miamistonesource.com/wp-content/uploads/2018/05/no-avatar-25359d55aa3c93ab3466622fd2ce712d1.jpg' };
 
+    const milli = review.Create_at.seconds * 1000;
+    const date = new Date(milli);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const secondsFormatted = String(date.getSeconds()).padStart(2, '0');
+
+    const formatDate = `${year}/${month}/${day} ${hours}:${minutes}:${secondsFormatted}`;
+
+    useEffect(() => {
+        console.log(review)
+    }, [])
     return (
         <View style={styles.container}>
             <View style={styles.leftContainer}>
@@ -21,7 +32,10 @@ const ReviewItem = ({ review }) => {
                         source={userAvatarSource}
                         style={styles.userAvatar}
                     />
-                    <Text style={styles.nameText}>{review.userInfo.displayName}</Text>
+                    <View style={styles.dateAndName}>
+                        <Text style={styles.nameText}>{review.userInfo.displayName}</Text>
+                        <Text style={{ color: 'white', fontSize: 12 }}>{formatDate}</Text>
+                    </View>
                 </View>
             </View>
         </View>
@@ -58,8 +72,14 @@ const styles = StyleSheet.create({
         marginRight: 8,
     },
     nameText: {
-        color: "white",
+        color: 'white',
         fontSize: 14,
+        marginRight: 110,
     },
+    dateAndName: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    }
 });
 export default ReviewItem
