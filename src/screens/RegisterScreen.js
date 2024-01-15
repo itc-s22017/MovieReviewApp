@@ -20,11 +20,22 @@ const RegisterScreen = ({ navigation }) => {
 
 
     const handleRegister = async () => {
+        if (name.length >= 10) {
+            showAlert("エラー", "10文字以下にしてください");
+            return;
+        }
+        if (password.length <= 6) {
+            showAlert("エラー", "6文字以上にしてください");
+            return;
+        }
+        
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
+
             await updateProfile(user, { displayName: name });
             await EmailVerification(user);
+
             try {
                 const db = getFirestore();
                 const userDocRef = doc(db, 'users', user.uid);
@@ -35,8 +46,9 @@ const RegisterScreen = ({ navigation }) => {
                         displayName: user.displayName,
                         email: user.email,
                         photoURL: user.photoURL,
-                        uid:user.uid,
+                        uid: user.uid,
                     };
+
                     await setDoc(userDocRef, Data);
                     console.log('新しいユーザーがRegister', user);
                 } else {
@@ -46,7 +58,7 @@ const RegisterScreen = ({ navigation }) => {
                 console.error('ログインエラー:', error);
             }
         } catch (error) {
-            console.log(`handleRegisterError:${error}`)
+            console.log(`handleRegisterError:${error}`);
         }
     };
 

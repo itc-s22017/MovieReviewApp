@@ -40,10 +40,10 @@ const LoginScreen = ({ navigation }) => {
                     };
                     await setDoc(userDocRef, Data);
                     setUser(user.user);
-                    console.log('新しいユーザーがlogin', user);
+                    console.log('新しいユーザーがlogin');
                 } else {
                     setUser(user.user);
-                    console.log('既に存在するユーザーlogin', user);
+                    console.log('既に存在するユーザーlogin');
                 }
             } catch (error) {
                 console.error('ログインエラー:', error);
