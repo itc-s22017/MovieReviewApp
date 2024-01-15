@@ -105,6 +105,7 @@ const style = StyleSheet.create({
         height: 60,
         justifyContent: 'center',
         alignItems: 'center',
+        opacity:0.4
     },
 });
 
