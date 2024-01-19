@@ -44,7 +44,7 @@ export default function MovieDetail({ route, navigation }) {
             }
         }
         getReviewsById()
-    }, [])
+    }, [reviews])
     return (
         <>
             <ScrollView style={style.container}>
