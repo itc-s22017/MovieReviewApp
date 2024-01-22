@@ -1,14 +1,23 @@
-import { Text, View, ScrollView, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, View, ScrollView, StyleSheet, TouchableOpacity, Switch } from "react-native";
 import Poster from "../../components/Poster";
 import { AntDesign } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
-import { getFirestore,collection, getDocs, query, where, getDoc, doc, orderBy } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, query, where, getDoc, doc, orderBy } from 'firebase/firestore';
 import { Firestore } from "../../firebase";
 import ReviewItem from "../../components/ReviewItem";
 
 export default function MovieDetail({ route, navigation }) {
     const { movie } = route.params;
     const [reviews, setReviews] = useState([]);
+    const [originalReviews, setOriginalReviews] = useState([]);
+    const [netabare, setNetabare] = useState(false);
+
+    const toggleSwitch = () => {
+        setNetabare(previousState => !previousState);
+        const filteredReviews = originalReviews.filter(v => netabare ? !v.Netabare : v.Netabare);
+        setReviews(filteredReviews);
+    }
+
 
     useEffect(() => {
         navigation.setOptions({
@@ -26,7 +35,7 @@ export default function MovieDetail({ route, navigation }) {
 
                 const reviewsData = await Promise.all(querySnapshot.docs.map(async (dooc) => {
                     const review = dooc.data();
-    
+
                     const userDoc = await getDoc(doc(db, 'users', review.UserId));
                     if (userDoc.exists()) {
                         const userInfo = userDoc.data();
@@ -36,7 +45,8 @@ export default function MovieDetail({ route, navigation }) {
                         return review;
                     }
                 }));
-                setReviews(reviewsData)
+                setOriginalReviews(reviewsData)
+                setReviews(reviewsData.filter(v => !v.Netabare))
 
             } catch (error) {
                 console.error('Error getting reviews:', error);
@@ -44,6 +54,7 @@ export default function MovieDetail({ route, navigation }) {
         }
         getReviewsById()
     }, [])
+
     return (
         <>
             <ScrollView style={style.container}>
@@ -53,6 +64,20 @@ export default function MovieDetail({ route, navigation }) {
                     <Text style={style.movieReleaseDate}>{movie.release_date}</Text>
                     <Text style={style.overview}>{movie.overview}</Text>
                 </View>
+                {originalReviews.some(v => v.Netabare || !v.Netabare) ?
+                    <View style={style.netabare}>
+                        <Text style={{ color: 'white', fontSize: 20 }}>ネタバレ</Text>
+                        <Switch
+                            trackColor={{ false: '#767577', true: '#81b0ff' }}
+                            thumbColor={netabare ? '#f5dd4b' : '#f4f3f4'}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={toggleSwitch}
+                            value={netabare}
+                            style={style.switch}
+                        />
+                    </View> : <Text style={style.noReview}>レビューがありません</Text>
+                }
+
                 {reviews.map((review, index) => (
                     <ReviewItem key={index} review={review} />
                 ))}
@@ -104,7 +129,22 @@ const style = StyleSheet.create({
         height: 60,
         justifyContent: 'center',
         alignItems: 'center',
-        opacity:0.4
+        opacity: 0.4
     },
+    netabare: {
+        flexDirection: 'row',
+        width: '80%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+        marginBottom: 20
+    },
+    noReview: {
+        color:'white',
+        fontSize:20,
+        alignItems:'center',
+        justifyContent:'center',
+        textAlign:'center',
+    }
 });
 
