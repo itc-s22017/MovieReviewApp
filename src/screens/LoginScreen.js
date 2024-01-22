@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { getFirestore, getDoc, doc, setDoc } from 'firebase/firestore';
 import {
     View,
     TextInput,
@@ -25,8 +26,28 @@ const LoginScreen = ({ navigation }) => {
                 showAlert('認証を完了してください', 'メールを確認してください')
                 return
             }
-            console.log(user)
-            setUser(user.user)
+            try {
+                const db = getFirestore();
+                const userDocRef = doc(db, 'users', user.user.uid);
+                const userDocSnapshot = await getDoc(userDocRef);
+
+                if (!userDocSnapshot.exists()) {
+                    const Data = {
+                        displayName: user.user.displayName,
+                        email: user.user.email,
+                        photoURL: user.user.photoURL,
+                        uid: user.user.uid,
+                    };
+                    await setDoc(userDocRef, Data);
+                    setUser(user.user);
+                    console.log('新しいユーザーがlogin');
+                } else {
+                    setUser(user.user);
+                    console.log('既に存在するユーザーlogin');
+                }
+            } catch (error) {
+                console.error('ログインエラー:', error);
+            }
         } catch (error) {
             console.log(error.message);
         }

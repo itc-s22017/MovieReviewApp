@@ -1,12 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Pressable } from 'react-native';
 import { auth } from '../../firebase';
 import { signOut } from 'firebase/auth';
 import { UserContext } from '../context/UserContext';
 
 const HomeScreen = ({ navigation }) => {
-  const { setUser } = useContext(UserContext)
+  const { setUser,user } = useContext(UserContext)
 
+  
 
   const handleLogout = () => {
     signOut(auth)

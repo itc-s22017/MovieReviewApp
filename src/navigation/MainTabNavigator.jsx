@@ -2,8 +2,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import { UserScreen } from "../screens/UserScreen";
 import { HomeStackNavigator } from "./HomeStackNavigator";
-import SearchMovie from "../screens/SearchMovie";
-import { SearchAndDetail, SearchForBottom } from "./SearchAndDetailNavigator";
+import { SearchAndDetail } from "./SearchAndDetailNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -35,11 +34,11 @@ export const MainTabNavigator = () => {
             <Feather name="search" color={color} size={26} />
           ),
           headerTitleAlign: "center",
-          headerTintColor:'white',
-          headerStyle:{
-            backgroundColor:'#202328'
+          headerTintColor: 'white',
+          headerStyle: {
+            backgroundColor: '#202328'
           },
-          headerShown:false
+          headerShown: false
         }}
       />
       <Tab.Screen
