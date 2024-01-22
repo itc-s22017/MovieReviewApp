@@ -2,7 +2,8 @@ import { Text, View, ScrollView, StyleSheet, TouchableOpacity } from "react-nati
 import Poster from "../../components/Poster";
 import { AntDesign } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, query, where, getDoc, doc, orderBy } from 'firebase/firestore';
+import { getFirestore,collection, getDocs, query, where, getDoc, doc, orderBy } from 'firebase/firestore';
+import { Firestore } from "../../firebase";
 import ReviewItem from "../../components/ReviewItem";
 
 export default function MovieDetail({ route, navigation }) {
@@ -23,8 +24,6 @@ export default function MovieDetail({ route, navigation }) {
                 const q = query(reviewsRef, where('MovieId', '==', movie.id), orderBy('Create_at', 'desc'));
                 const querySnapshot = await getDocs(q);
 
-                // setReviews(querySnapshot.docs.map(doc => doc.data()));
-
                 const reviewsData = await Promise.all(querySnapshot.docs.map(async (dooc) => {
                     const review = dooc.data();
     
@@ -44,7 +43,7 @@ export default function MovieDetail({ route, navigation }) {
             }
         }
         getReviewsById()
-    }, [reviews])
+    }, [])
     return (
         <>
             <ScrollView style={style.container}>
