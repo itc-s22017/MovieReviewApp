@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import { UserContext } from '../context/UserContext';
 import { getFirestore, collection, addDoc, Timestamp } from 'firebase/firestore';
+import SelectScore from '../../components/SelectScore';
 
 
 const CreateReviewScreen = ({ route, navigation }) => {
@@ -18,6 +19,7 @@ const CreateReviewScreen = ({ route, navigation }) => {
     const { movie } = route.params;
     const [isEnabled, setIsEnabled] = useState(false);
     const [text, setText] = useState('');
+    const [score, setScore] = useState(3)
     const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     const handleInputChange = (inputText) => {
@@ -31,7 +33,7 @@ const CreateReviewScreen = ({ route, navigation }) => {
                 UserId: user.uid,
                 MovieId: movie.id,
                 Content: text,
-                Star: 5,
+                Star: score,
                 Create_at: Timestamp.now(),
                 Netabare: isEnabled,
             });
@@ -52,7 +54,7 @@ const CreateReviewScreen = ({ route, navigation }) => {
                 <Text style={style.title}>タイトル:{movie.title}</Text>
                 <View style={style.stars}>
                     <Text style={style.textSize}>満足度</Text>
-                    <Text style={style.textSize}>★★★★★</Text>
+                    <SelectScore  score={score} onChangeScore={(v) => setScore(v)}/>
                 </View>
                 <View style={style.stars}>
                     <Text style={style.textSize}>ネタバレ</Text>
