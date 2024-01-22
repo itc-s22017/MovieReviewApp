@@ -27,16 +27,15 @@ const ReviewItem = ({ review }) => {
                     <Stars score={review.Star} starSize={16} textSize={12} />
                     <Text style={styles.reviewText}>{review.Content}</Text>
                 </View>
+            </View>
+            <View style={styles.bottomContainer}>
                 <View style={styles.userInfoContainer}>
-                    <Image
-                        source={userAvatarSource}
-                        style={styles.userAvatar}
-                    />
-                    <View style={styles.dateAndName}>
+                    <Image source={userAvatarSource} style={styles.userAvatar} />
+                    <View style={styles.nameAndIcon}>
                         <Text style={styles.nameText}>{review.userInfo.displayName}</Text>
-                        <Text style={{ color: 'white', fontSize: 12 }}>{formatDate}</Text>
                     </View>
                 </View>
+                <Text style={styles.dateText}>{formatDate}</Text>
             </View>
         </View>
     );
@@ -44,7 +43,7 @@ const ReviewItem = ({ review }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: "row",
+        flexDirection: "column",
         justifyContent: "space-between",
         margin: 16,
         borderWidth: 1,
@@ -55,15 +54,23 @@ const styles = StyleSheet.create({
     leftContainer: {
         flexDirection: "column",
         justifyContent: "space-between",
+        flex: 1,
+        marginBottom:12
     },
-    reviewText: {
+    bottomContainer: {
+        flexDirection: "row",
+        justifyContent:"space-between",
+        // alignItems: "flex-start",
         marginTop: 8,
-        color: "white",
     },
     userInfoContainer: {
         flexDirection: "row",
         alignItems: "center",
-        marginTop: 12,
+        marginBottom: 8,
+    },
+    nameAndIcon: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     userAvatar: {
         width: 24,
@@ -71,15 +78,20 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         marginRight: 8,
     },
+    reviewText: {
+        marginTop: 8,
+        color: "white",
+    },
     nameText: {
         color: 'white',
         fontSize: 14,
-        marginRight: 110,
+        marginRight: 8,
     },
-    dateAndName: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    }
+    dateText: {
+        color: 'white',
+        fontSize: 12,
+        marginTop: 12,
+    },
 });
+
 export default ReviewItem

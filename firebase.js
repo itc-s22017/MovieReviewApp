@@ -2,6 +2,8 @@ import { initializeApp } from "firebase/app"
 import { initializeAuth, getReactNativePersistence, browserLocalPersistence, browserPopupRedirectResolver, browserSessionPersistence, indexedDBLocalPersistence } from 'firebase/auth'
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage'
 import { Platform } from "react-native";
+import { getFirestore } from 'firebase/firestore';
+
 import {
     API_KEY_FIREBASE,
     AUTH_DOMAIN,
@@ -18,10 +20,12 @@ const firebaseConfig = {
     projectId: PROJECT_ID,
     storageBucket: STORAGE_BUCKET,
     messagingSenderId: MESSAGING_SENDER_ID,
-    appId: APP_ID
+    appId: APP_ID,
 };
 
 const app = initializeApp(firebaseConfig);
+// export const Firestore = getFirestore(app);
+
 export let auth;
 
 if (Platform.OS === 'ios' || Platform.OS === 'android') {
