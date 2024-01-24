@@ -2,9 +2,10 @@ import { Text, View, ScrollView, StyleSheet, TouchableOpacity, Switch } from "re
 import Poster from "../../components/Poster";
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { useEffect, useState, useContext } from "react";
-import { getFirestore, collection, getDocs, query, where, getDoc, doc, orderBy,updateDoc } from 'firebase/firestore';
+import { getFirestore, collection, query, where, getDoc, doc, orderBy, updateDoc, onSnapshot } from 'firebase/firestore';
 import ReviewItem from "../../components/ReviewItem";
 import { UserContext } from "../context/UserContext";
+
 const db = getFirestore()
 
 export default function MovieDetail({ route, navigation }) {
@@ -20,6 +21,7 @@ export default function MovieDetail({ route, navigation }) {
         const filteredReviews = originalReviews.filter(v => netabare ? !v.Netabare : v.Netabare);
         setReviews(filteredReviews);
     }
+
 
     const onClickStar = async () => {
         try {
@@ -71,33 +73,36 @@ export default function MovieDetail({ route, navigation }) {
     useEffect(() => {
         const getReviewsById = async () => {
             try {
-                const db = getFirestore();
                 const reviewsRef = collection(db, 'reviews');
                 const q = query(reviewsRef, where('MovieId', '==', movie.id), orderBy('Create_at', 'desc'));
-                const querySnapshot = await getDocs(q);
 
-                const reviewsData = await Promise.all(querySnapshot.docs.map(async (dooc) => {
-                    const review = dooc.data();
+                const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+                    const reviewsData = await Promise.all(querySnapshot.docs.map(async (dooc) => {
+                        const review = dooc.data();
 
-                    const userDoc = await getDoc(doc(db, 'users', review.UserId));
-                    if (userDoc.exists()) {
-                        const userInfo = userDoc.data();
-                        return { ...review, userInfo };
-                    } else {
-                        console.log('User not found');
-                        return review;
-                    }
-                }));
-                setOriginalReviews(reviewsData)
-                setReviews(reviewsData.filter(v => !v.Netabare))
+                        const userDoc = await getDoc(doc(db, 'users', review.UserId));
+                        if (userDoc.exists()) {
+                            const userInfo = userDoc.data();
+                            return { ...review, userInfo };
+                        } else {
+                            console.log('User not found');
+                            return review;
+                        }
+                    }));
 
+                    setOriginalReviews(reviewsData);
+                    setNetabare(false)
+                    setReviews(reviewsData.filter(v => !v.Netabare));
+
+                });
+
+                return () => unsubscribe();
             } catch (error) {
                 console.error('Error getting reviews:', error);
             }
         }
-        getReviewsById()
-    }, [])
-
+        getReviewsById();
+    }, []);
     return (
         <>
             <ScrollView style={style.container}>
