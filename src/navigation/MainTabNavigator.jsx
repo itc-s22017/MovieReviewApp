@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { UserScreen } from "../screens/UserScreen";
 import { HomeStackNavigator } from "./HomeStackNavigator";
 import { SearchAndDetail } from "./SearchAndDetailNavigator";
+import { UserStack } from "./UserStackNavigator"
 
 const Tab = createBottomTabNavigator();
 
@@ -42,13 +43,14 @@ export const MainTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="User"
-        component={UserScreen}
+        name="ユーザー情報"
+        component={UserStack}
         options={{
           tabBarLabel: "User",
           tabBarIcon: ({ color }) => (
             <Feather name="user" color={color} size={26} />
           ),
+          headerShown: false
         }}
       />
     </Tab.Navigator>

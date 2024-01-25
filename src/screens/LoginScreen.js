@@ -37,6 +37,7 @@ const LoginScreen = ({ navigation }) => {
                         email: user.user.email,
                         photoURL: user.user.photoURL,
                         uid: user.user.uid,
+                        likes:[]
                     };
                     await setDoc(userDocRef, Data);
                     setUser(user.user);

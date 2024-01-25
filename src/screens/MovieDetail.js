@@ -1,16 +1,20 @@
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, Switch } from "react-native";
 import Poster from "../../components/Poster";
-import { AntDesign } from '@expo/vector-icons';
-import { useEffect, useState } from "react";
-import { getFirestore, collection, getDocs, query, where, getDoc, doc, orderBy } from 'firebase/firestore';
-import { Firestore } from "../../firebase";
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
+import { useEffect, useState, useContext } from "react";
+import { getFirestore, collection, query, where, getDoc, doc, orderBy, updateDoc, onSnapshot } from 'firebase/firestore';
 import ReviewItem from "../../components/ReviewItem";
+import { UserContext } from "../context/UserContext";
+
+const db = getFirestore()
 
 export default function MovieDetail({ route, navigation }) {
     const { movie } = route.params;
     const [reviews, setReviews] = useState([]);
     const [originalReviews, setOriginalReviews] = useState([]);
     const [netabare, setNetabare] = useState(false);
+    const [liked, setLiked] = useState(null)
+    const { user } = useContext(UserContext);
 
     const toggleSwitch = () => {
         setNetabare(previousState => !previousState);
@@ -18,6 +22,47 @@ export default function MovieDetail({ route, navigation }) {
         setReviews(filteredReviews);
     }
 
+
+    const onClickStar = async () => {
+        try {
+            const userRef = doc(db, 'users', user.uid);
+            const userDoc = await getDoc(userRef);
+            const currentLikes = userDoc.data().likes || [];
+
+            if (userDoc.exists() && userDoc.data().likes.includes(movie.id)) {
+                const updatedLikes = currentLikes.filter(movieId => movieId !== movie.id);
+
+                await updateDoc(userRef, { likes: updatedLikes });
+                setLiked(updatedLikes);
+            } else {
+                const updatedLikes = [...currentLikes, movie.id]
+
+                await updateDoc(userRef, { likes: updatedLikes });
+                setLiked(updatedLikes);
+            }
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    useEffect(() => {
+        const fetchIsLiked = async () => {
+            try {
+                const userRef = doc(db, 'users', user.uid);
+                const userDoc = await getDoc(userRef);
+
+                if (userDoc.exists()) {
+                    const userLikes = userDoc.data().likes || [];
+                    setLiked(userLikes.includes(movie.id));
+                } else {
+                    console.log('User not found');
+                }
+            } catch (error) {
+                console.error("Error fetching likes:", error);
+            }
+        }
+        fetchIsLiked()
+    }, [liked])
 
     useEffect(() => {
         navigation.setOptions({
@@ -28,39 +73,50 @@ export default function MovieDetail({ route, navigation }) {
     useEffect(() => {
         const getReviewsById = async () => {
             try {
-                const db = getFirestore();
                 const reviewsRef = collection(db, 'reviews');
                 const q = query(reviewsRef, where('MovieId', '==', movie.id), orderBy('Create_at', 'desc'));
-                const querySnapshot = await getDocs(q);
 
-                const reviewsData = await Promise.all(querySnapshot.docs.map(async (dooc) => {
-                    const review = dooc.data();
+                const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+                    const reviewsData = await Promise.all(querySnapshot.docs.map(async (dooc) => {
+                        const review = dooc.data();
 
-                    const userDoc = await getDoc(doc(db, 'users', review.UserId));
-                    if (userDoc.exists()) {
-                        const userInfo = userDoc.data();
-                        return { ...review, userInfo };
-                    } else {
-                        console.log('User not found');
-                        return review;
-                    }
-                }));
-                setOriginalReviews(reviewsData)
-                setReviews(reviewsData.filter(v => !v.Netabare))
+                        const userDoc = await getDoc(doc(db, 'users', review.UserId));
+                        if (userDoc.exists()) {
+                            const userInfo = userDoc.data();
+                            return { ...review, userInfo };
+                        } else {
+                            console.log('User not found');
+                            return review;
+                        }
+                    }));
 
+                    setOriginalReviews(reviewsData);
+                    setNetabare(false)
+                    setReviews(reviewsData.filter(v => !v.Netabare));
+
+                });
+
+                return () => unsubscribe();
             } catch (error) {
                 console.error('Error getting reviews:', error);
             }
         }
-        getReviewsById()
-    }, [])
-
+        getReviewsById();
+    }, []);
     return (
         <>
             <ScrollView style={style.container}>
                 <Poster posterPath={movie.poster_path} imageWidth={780} imageHeight={480}></Poster>
                 <View>
-                    <Text style={style.title}>{movie.title}</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={style.title}>{movie.title}</Text>
+                        <TouchableOpacity onPress={onClickStar}>
+                            <FontAwesome
+                                style={style.star}
+                                name={liked ? "star" : "star-o"}
+                            />
+                        </TouchableOpacity>
+                    </View>
                     <Text style={style.movieReleaseDate}>{movie.release_date}</Text>
                     <Text style={style.overview}>{movie.overview}</Text>
                 </View>
@@ -140,11 +196,22 @@ const style = StyleSheet.create({
         marginBottom: 20
     },
     noReview: {
-        color:'white',
-        fontSize:20,
-        alignItems:'center',
-        justifyContent:'center',
-        textAlign:'center',
-    }
+        color: 'white',
+        fontSize: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        textAlign: 'center',
+    },
+    star: {
+        marginRight: 8,
+        fontSize: 24,
+        color: "yellow",
+
+    },
+    scoreText: {
+        fontSize: 14,
+        color: "#000",
+        fontWeight: "bold",
+    },
 });
 
