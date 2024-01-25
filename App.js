@@ -49,6 +49,7 @@ export default function App() {
               email: userData.email,
               photoURL:userData.photoURL,
               uid:userData.uid,
+              likes:[]
             };
 
             await setDoc(userDocRef, Data);
