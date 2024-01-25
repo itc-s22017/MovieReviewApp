@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { View, Text, Pressable, ScrollView, StyleSheet, Image,FlatList } from 'react-native'
+import { View, Text, Pressable, ScrollView, StyleSheet, Image, FlatList } from 'react-native'
 import { UserContext } from '../context/UserContext'
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
@@ -48,8 +48,10 @@ export const UserScreen = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
-      <Image source={userAvatarSource} style={styles.userAvatar} />
-      <Text>{user.displayName}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Image source={userAvatarSource} style={styles.userAvatar} />
+        <Text style={styles.nameText}>{user.displayName}</Text>
+      </View>
       <Pressable
         onPress={handleLogout}
         style={{
@@ -77,13 +79,13 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   userInfo: {
-    flexDirection: 'row', // 横に並べる
+    flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
   },
   userAvatar: {
-    width: 24,
-    height: 24,
+    width: 40,
+    height: 40,
     borderRadius: 12,
     marginRight: 8,
   },
@@ -92,4 +94,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 15,
   },
+  nameText: {
+    fontSize: 20
+  }
 });
