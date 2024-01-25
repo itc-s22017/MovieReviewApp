@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from "react-native"
 import axios from "axios";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useContext } from "react";
 import Poster from "./Poster";
 
 const MovieFlatList = (props) => {
@@ -8,12 +8,18 @@ const MovieFlatList = (props) => {
   const listName = props.listName;
   const navigation = props.navigation;
 
-  const [Movies, setMovies] = useState({});
+  const [Movies, setMovies] = useState([]);
+
 
   useEffect(() => {
     async function getMovies() {
       try {
         const results = await axios.get(url);
+        // 1件しか取ってこないとき
+        if (results.data.results === undefined) {
+          setMovies([results.data]);
+          return
+        }
         setMovies(results.data.results);
       } catch (error) {
         console.log(error);
@@ -21,10 +27,10 @@ const MovieFlatList = (props) => {
     }
     getMovies();
   }, []);
+
   return (
     <View>
       <Text style={style.listName}>{listName}</Text>
-
       <FlatList
         data={Movies}
         keyExtractor={item => item.id}
