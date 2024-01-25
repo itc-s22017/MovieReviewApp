@@ -17,9 +17,6 @@ const ReviewItem = ({ review }) => {
 
     const formatDate = `${year}/${month}/${day} ${hours}:${minutes}:${secondsFormatted}`;
 
-    useEffect(() => {
-        console.log(review)
-    }, [])
     return (
         <View style={styles.container}>
             <View style={styles.leftContainer}>
