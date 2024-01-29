@@ -77,13 +77,14 @@ export default function MovieDetail({ route, navigation }) {
                 const q = query(reviewsRef, where('MovieId', '==', movie.id), orderBy('Create_at', 'desc'));
 
                 const unsubscribe = onSnapshot(q, async (querySnapshot) => {
-                    const reviewsData = await Promise.all(querySnapshot.docs.map(async (dooc) => {
-                        const review = dooc.data();
+                    const reviewsData = await Promise.all(querySnapshot.docs.map(async (document) => {
+                        const review = document.data();
+                        const reviewId = document.id;
 
                         const userDoc = await getDoc(doc(db, 'users', review.UserId));
                         if (userDoc.exists()) {
                             const userInfo = userDoc.data();
-                            return { ...review, userInfo };
+                            return { ...review, userInfo, id: reviewId };
                         } else {
                             console.log('User not found');
                             return review;

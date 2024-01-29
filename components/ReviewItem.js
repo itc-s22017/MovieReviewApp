@@ -1,6 +1,11 @@
-import React, { useEffect } from "react";
-import { View, StyleSheet, Text, Image } from "react-native";
-import Stars from "./Stars"
+import React, { useContext, useEffect } from "react";
+import { View, StyleSheet, Text, Image, Button } from "react-native";
+import { deleteDoc, getFirestore, doc } from "firebase/firestore"
+import Stars from "./Stars";
+import { UserContext } from "../src/context/UserContext";
+import { cancelAlert } from "../src/utils/showAlert";
+const db = getFirestore();
+
 const ReviewItem = ({ review }) => {
     const userAvatarSource = review.userInfo.photoURL
         ? { uri: review.userInfo.photoURL }
@@ -17,11 +22,24 @@ const ReviewItem = ({ review }) => {
 
     const formatDate = `${year}/${month}/${day} ${hours}:${minutes}:${secondsFormatted}`;
 
+    const { user } = useContext(UserContext);
+
+    const handleDelete = () => {
+        cancelAlert("確認", "本当に削除しますか？", async () => {
+            await deleteDoc(doc(db, "reviews", review.id));
+        })
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.leftContainer}>
                 <View>
-                    <Stars score={review.Star} starSize={16} textSize={12} />
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Stars score={review.Star} starSize={16} textSize={12} />
+                        {user.uid === review.userInfo.uid ?
+                            <Button title="削除" accessibilityLabel="Sure?" onPress={handleDelete} /> : ''
+                        }
+                    </View>
                     <Text style={styles.reviewText}>{review.Content}</Text>
                 </View>
             </View>
@@ -52,11 +70,11 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         justifyContent: "space-between",
         flex: 1,
-        marginBottom:12
+        marginBottom: 12
     },
     bottomContainer: {
         flexDirection: "row",
-        justifyContent:"space-between",
+        justifyContent: "space-between",
         // alignItems: "flex-start",
         marginTop: 8,
     },
