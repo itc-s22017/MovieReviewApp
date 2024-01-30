@@ -1,12 +1,12 @@
 import React, { useContext, useEffect } from "react";
-import { View, StyleSheet, Text, Image, Button } from "react-native";
+import { View, StyleSheet, Text, Image, Button, TouchableHighlight } from "react-native";
 import { deleteDoc, getFirestore, doc } from "firebase/firestore"
 import Stars from "./Stars";
 import { UserContext } from "../src/context/UserContext";
 import { cancelAlert } from "../src/utils/showAlert";
 const db = getFirestore();
 
-const ReviewItem = ({ review }) => {
+const ReviewItem = ({ review,navigation }) => {
     const userAvatarSource = review.userInfo.photoURL
         ? { uri: review.userInfo.photoURL }
         : { uri: 'https://sp-ao.shortpixel.ai/client/q_lossless,ret_img,w_250/https://miamistonesource.com/wp-content/uploads/2018/05/no-avatar-25359d55aa3c93ab3466622fd2ce712d1.jpg' };
@@ -45,7 +45,9 @@ const ReviewItem = ({ review }) => {
             </View>
             <View style={styles.bottomContainer}>
                 <View style={styles.userInfoContainer}>
-                    <Image source={userAvatarSource} style={styles.userAvatar} />
+                    <TouchableHighlight onPress={() => {navigation.navigate("UScreen",{uid:review.userInfo.uid})}}>
+                        <Image source={userAvatarSource} style={styles.userAvatar} />
+                    </TouchableHighlight>
                     <View style={styles.nameAndIcon}>
                         <Text style={styles.nameText}>{review.userInfo.displayName}</Text>
                     </View>

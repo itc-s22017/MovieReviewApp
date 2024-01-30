@@ -6,6 +6,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import SearchMovie from "../screens/SearchMovie";
 import CreateReviewScreen from "../screens/CreateReviewScreen";
+import { UserScreen } from "../screens/UserScreen";
 
 const Stack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -54,6 +55,18 @@ const MainStack = () => {
         component={MovieDetail}
         options={{
           title: "映画詳細",
+          headerStyle: {
+            backgroundColor: "#202328",
+          },
+          headerTintColor: "#fff",
+          headerTitleAlign: "center",
+        }}
+      />
+      <Stack.Screen
+        name="UScreen"
+        component={UserScreen}
+        options={{
+          title: "USER INFO",
           headerStyle: {
             backgroundColor: "#202328",
           },
