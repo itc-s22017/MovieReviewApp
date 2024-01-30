@@ -13,7 +13,7 @@ export const UserStack = () => {
     return (
         <Stack.Navigator>
             <Stack.Screen
-                name="User"
+                name="UserScreen"
                 component={UserScreen}
                 options={{
                     headerStyle: {
@@ -37,7 +37,7 @@ export const UserStack = () => {
                     // headerShown:false
                 }}
             />
-            {/* <Stack.Screen
+            <Stack.Screen
                 name="UScreen"
                 component={UserScreen}
                 options={{
@@ -48,7 +48,7 @@ export const UserStack = () => {
                     headerTintColor: "#fff",
                     headerTitleAlign: "center",
                 }}
-            /> */}
+            />
             <Stack.Screen
                 name="CreateReviewScreen"
                 component={CreateReviewScreen}
