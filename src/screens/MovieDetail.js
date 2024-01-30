@@ -103,7 +103,7 @@ export default function MovieDetail({ route, navigation }) {
             }
         }
         getReviewsById();
-    }, []);
+    }, [movie]);
     return (
         <>
             <ScrollView style={style.container}>

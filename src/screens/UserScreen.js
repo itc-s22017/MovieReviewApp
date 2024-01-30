@@ -3,7 +3,7 @@ import { View, Text, Pressable, ScrollView, StyleSheet, Image, FlatList } from '
 import { UserContext } from '../context/UserContext'
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
-import { getFirestore, doc, onSnapshot } from 'firebase/firestore';
+import { getFirestore, doc, onSnapshot, where, query, collection, getDocs } from 'firebase/firestore';
 import { generateSearchByIdUrl } from "../../request";
 import MovieFlatList from '../../components/MovieFlatList';
 
@@ -18,19 +18,35 @@ export const UserScreen = ({ navigation, route }) => {
   const userAvatarSource = currentUserId.photoURL
     ? { uri: currentUserId.photoURL }
     : { uri: 'https://sp-ao.shortpixel.ai/client/q_lossless,ret_img,w_250/https://miamistonesource.com/wp-content/uploads/2018/05/no-avatar-25359d55aa3c93ab3466622fd2ce712d1.jpg' };
+  const [commentedMovieId, setCommentedMovieId] = useState([])
 
   useEffect(() => {
     const test = async () => {
       try {
-        const userRef = doc(db, 'users', otherUserId || user.uid);
-        const unsubscribe = onSnapshot(userRef, (snapshot) => {
+        const unsubscribeUser = onSnapshot(doc(db, 'users', otherUserId || user.uid), (snapshot) => {
           const currentLikes = snapshot.data().likes || [];
           setTestId(currentLikes);
           if (otherUserId) {
-              setOtherUser(snapshot.data());
+            setOtherUser(snapshot.data());
           }
         });
-        return () => unsubscribe();
+
+        const unsubscribeReviews = onSnapshot(
+          query(
+            collection(db, 'reviews'),
+            where('UserId', '==', otherUserId || user.uid)
+          ),
+          (querySnapshot) => {
+            const reviews = querySnapshot.docs.map(doc => doc.data().MovieId);
+            const commentedIds = Array.from(new Set(reviews));
+            setCommentedMovieId(commentedIds);
+          }
+        );
+
+        return () => {
+          unsubscribeUser();
+          unsubscribeReviews();
+        };
       } catch (e) {
         console.log(e);
       }
@@ -73,6 +89,13 @@ export const UserScreen = ({ navigation, route }) => {
       <Text style={styles.likesTitle}>いいねした作品</Text>
       <FlatList
         data={testid}
+        horizontal
+        renderItem={({ item }) => <MovieFlatList url={generateSearchByIdUrl(item)} listName={''} navigation={navigation} key={item}></MovieFlatList>}
+      />
+
+      <Text style={styles.likesTitle}>コメントした作品</Text>
+      <FlatList
+        data={commentedMovieId}
         horizontal
         renderItem={({ item }) => <MovieFlatList url={generateSearchByIdUrl(item)} listName={''} navigation={navigation} key={item}></MovieFlatList>}
       />
