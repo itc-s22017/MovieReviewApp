@@ -38,6 +38,18 @@ export const UserStack = () => {
                 }}
             />
             <Stack.Screen
+                name="UScreen"
+                component={UserScreen}
+                options={{
+                    title: "ユーザー情報",
+                    headerStyle: {
+                        backgroundColor: "#202328",
+                    },
+                    headerTintColor: "#fff",
+                    headerTitleAlign: "center",
+                }}
+            />
+            <Stack.Screen
                 name="CreateReviewScreen"
                 component={CreateReviewScreen}
                 options={{

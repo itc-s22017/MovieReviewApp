@@ -136,7 +136,7 @@ export default function MovieDetail({ route, navigation }) {
                 }
 
                 {reviews.map((review, index) => (
-                    <ReviewItem key={index} review={review} />
+                    <ReviewItem key={index} review={review} navigation={navigation}/>
                 ))}
             </ScrollView>
             <View style={style.container2}>

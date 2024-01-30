@@ -9,32 +9,34 @@ import MovieFlatList from '../../components/MovieFlatList';
 
 const db = getFirestore()
 
-export const UserScreen = ({ navigation }) => {
+export const UserScreen = ({ navigation, route }) => {
   const { setUser, user } = useContext(UserContext);
   const [testid, setTestId] = useState([])
-  const userAvatarSource = user.photoURL
-    ? { uri: user.photoURL }
+  const otherUserId = route.params?.uid;
+  const [otherUser, setOtherUser] = useState({});
+  const currentUserId = otherUserId ? otherUser : user;
+  const userAvatarSource = currentUserId.photoURL
+    ? { uri: currentUserId.photoURL }
     : { uri: 'https://sp-ao.shortpixel.ai/client/q_lossless,ret_img,w_250/https://miamistonesource.com/wp-content/uploads/2018/05/no-avatar-25359d55aa3c93ab3466622fd2ce712d1.jpg' };
-
-  const likesMovie = testid.map(v => (
-    <MovieFlatList url={generateSearchByIdUrl(v)} listName={''} navigation={navigation} key={v}></MovieFlatList>
-  ))
 
   useEffect(() => {
     const test = async () => {
       try {
-        const userRef = doc(db, 'users', user.uid);
+        const userRef = doc(db, 'users', otherUserId || user.uid);
         const unsubscribe = onSnapshot(userRef, (snapshot) => {
           const currentLikes = snapshot.data().likes || [];
           setTestId(currentLikes);
+          if (otherUserId) {
+              setOtherUser(snapshot.data());
+          }
         });
         return () => unsubscribe();
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
     }
     test()
-  }, [user])
+  }, [user, otherUserId]);
 
   const handleLogout = () => {
     signOut(auth)
@@ -46,31 +48,35 @@ export const UserScreen = ({ navigation }) => {
         console.log(error.message);
       });
   };
+
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <Image source={userAvatarSource} style={styles.userAvatar} />
-        <Text style={styles.nameText}>{user.displayName}</Text>
+        <Text style={styles.nameText}>{currentUserId.displayName}</Text>
       </View>
-      <Pressable
-        onPress={handleLogout}
-        style={{
-          marginTop: 10,
-          padding: 10,
-          backgroundColor: '#88cb7f',
-          borderRadius: 10,
-          width: 100,
-        }}
-      >
-        <Text style={{ color: 'white' }}>ログアウト</Text>
-      </Pressable>
+      {!otherUserId &&
+        <Pressable Pressable
+          onPress={handleLogout}
+          style={{
+            marginTop: 10,
+            padding: 10,
+            backgroundColor: '#88cb7f',
+            borderRadius: 10,
+            width: 100,
+          }}
+        >
+          <Text style={{ color: 'white' }}>ログアウト</Text>
+        </Pressable>
+      }
+
       <Text style={styles.likesTitle}>いいねした作品</Text>
       <FlatList
         data={testid}
         horizontal
         renderItem={({ item }) => <MovieFlatList url={generateSearchByIdUrl(item)} listName={''} navigation={navigation} key={item}></MovieFlatList>}
       />
-    </View>
+    </View >
   );
 };
 

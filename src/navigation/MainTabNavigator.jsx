@@ -43,7 +43,7 @@ export const MainTabNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="ユーザー情報"
+        name="UserScreen"
         component={UserStack}
         options={{
           tabBarLabel: "User",
