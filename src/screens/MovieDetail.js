@@ -109,14 +109,16 @@ export default function MovieDetail({ route, navigation }) {
             <ScrollView style={style.container}>
                 <Poster posterPath={movie.poster_path} imageWidth={780} imageHeight={480}></Poster>
                 <View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={style.title}>{movie.title}</Text>
-                        <TouchableOpacity onPress={onClickStar}>
-                            <FontAwesome
-                                style={style.star}
-                                name={liked ? "star" : "star-o"}
-                            />
-                        </TouchableOpacity>
+                    <View>
+                        <Text style={style.title}>
+                            {movie.title}
+                            <TouchableOpacity onPress={onClickStar}>
+                                <FontAwesome
+                                    style={style.star}
+                                    name={liked ? "star" : "star-o"}
+                                />
+                            </TouchableOpacity>
+                        </Text>
                     </View>
                     <Text style={style.movieReleaseDate}>{movie.release_date}</Text>
                     <Text style={style.overview}>{movie.overview}</Text>
@@ -136,7 +138,7 @@ export default function MovieDetail({ route, navigation }) {
                 }
 
                 {reviews.map((review, index) => (
-                    <ReviewItem key={index} review={review} navigation={navigation}/>
+                    <ReviewItem key={index} review={review} navigation={navigation} />
                 ))}
             </ScrollView>
             <View style={style.container2}>
@@ -204,7 +206,8 @@ const style = StyleSheet.create({
         textAlign: 'center',
     },
     star: {
-        marginRight: 8,
+        marginLeft: 8,
+        marginTop:10,
         fontSize: 24,
         color: "yellow",
 
