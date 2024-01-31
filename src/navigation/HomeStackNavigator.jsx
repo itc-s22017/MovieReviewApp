@@ -39,18 +39,6 @@ const MainStack = () => {
         })}
       />
       <Stack.Screen
-        name="SearchMovie"
-        component={SearchMovie}
-        options={{
-          title: "映画検索",
-          headerStyle: {
-            backgroundColor: "#202328",
-          },
-          headerTintColor: "#fff",
-          headerTitleAlign: "center",
-        }}
-      />
-      <Stack.Screen
         name="MovieDetail"
         component={MovieDetail}
         options={{
@@ -62,8 +50,20 @@ const MainStack = () => {
           headerTitleAlign: "center",
         }}
       />
+      {/* <Stack.Screen
+        name="SearchMovie"
+        component={SearchMovie}
+        options={{
+          title: "映画検索",
+          headerStyle: {
+            backgroundColor: "#202328",
+          },
+          headerTintColor: "#fff",
+          headerTitleAlign: "center",
+        }}
+      /> */}
       <Stack.Screen
-        name="UScreen"
+        name="UserDetailScreen"
         component={UserScreen}
         options={{
           title: "USER INFO",

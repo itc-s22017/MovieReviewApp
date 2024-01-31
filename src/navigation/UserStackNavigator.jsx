@@ -32,13 +32,13 @@ export const UserStack = () => {
                     headerStyle: {
                         backgroundColor: "#202328",
                     },
-                    headerTintColor: "#fff",
+                    headerTintColor: "white",
                     headerTitleAlign: "center",
-                    // headerShown:false
+                    title: 'ユーザー情報'
                 }}
             />
             <Stack.Screen
-                name="UScreen"
+                name="UserDetailScreen"  
                 component={UserScreen}
                 options={{
                     title: "ユーザー情報",

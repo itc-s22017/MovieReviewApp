@@ -45,7 +45,7 @@ const ReviewItem = ({ review,navigation }) => {
             </View>
             <View style={styles.bottomContainer}>
                 <View style={styles.userInfoContainer}>
-                    <TouchableHighlight onPress={() => {navigation.navigate("UScreen",{uid:review.userInfo.uid})}}>
+                    <TouchableHighlight onPress={() => {navigation.navigate("UserDetailScreen",{uid:review.userInfo.uid})}}>
                         <Image source={userAvatarSource} style={styles.userAvatar} />
                     </TouchableHighlight>
                     <View style={styles.nameAndIcon}>
