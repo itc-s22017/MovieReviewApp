@@ -50,7 +50,7 @@ const MainStack = () => {
           headerTitleAlign: "center",
         }}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="SearchMovie"
         component={SearchMovie}
         options={{
@@ -61,7 +61,7 @@ const MainStack = () => {
           headerTintColor: "#fff",
           headerTitleAlign: "center",
         }}
-      /> */}
+      />
       <Stack.Screen
         name="UserDetailScreen"
         component={UserScreen}
