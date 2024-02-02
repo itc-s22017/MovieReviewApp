@@ -1,7 +1,7 @@
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, Switch } from "react-native";
 import Poster from "../../components/Poster";
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { getFirestore, collection, query, where, getDoc, doc, orderBy, updateDoc, onSnapshot } from 'firebase/firestore';
 import ReviewItem from "../../components/ReviewItem";
 import { UserContext } from "../context/UserContext";
@@ -15,13 +15,12 @@ export default function MovieDetail({ route, navigation }) {
     const [netabare, setNetabare] = useState(false);
     const [liked, setLiked] = useState(null)
     const { user } = useContext(UserContext);
-    const countries = ["古い順", "新しい順"]
+    const countries = ["古い順", "新しい順", "評価が高い順", "評価が低い順"]
     const [selectedSort, setSelectedSort] = useState(countries[1])
 
     const moveToCreateReviewScreen = () => {
         navigation.navigate('CreateReviewScreen', { movie })
     }
-
 
     const toggleSwitch = () => {
         setNetabare(previousState => !previousState);
@@ -43,7 +42,7 @@ export default function MovieDetail({ route, navigation }) {
                 await updateDoc(userRef, { likes: updatedLikes });
                 setLiked(updatedLikes);
             } else {
-                const updatedLikes = [...currentLikes, movie.id]
+                const updatedLikes = [...currentLikes, movie.id];
 
                 await updateDoc(userRef, { likes: updatedLikes });
                 setLiked(updatedLikes);
@@ -53,19 +52,27 @@ export default function MovieDetail({ route, navigation }) {
         }
     }
 
-    useEffect(() => {
-        const sortedReviews = [...originalReviews].sort((a, b) => {
-            if (selectedSort === "古い順") {
-                return a.Create_at - b.Create_at;
-            } else {
-                return b.Create_at - a.Create_at;
+    const sortReviews = useCallback(() => {
+        return [...originalReviews].sort((a, b) => {
+            switch (selectedSort) {
+                case "古い順":
+                    return a.Create_at.seconds - b.Create_at.seconds;
+                case "新しい順":
+                    return b.Create_at.seconds - a.Create_at.seconds;
+                case "評価が高い順":
+                    return b.Star - a.Star || b.Create_at.seconds - a.Create_at.seconds;
+                case "評価が低い順":
+                    return a.Star - b.Star || b.Create_at.seconds - a.Create_at.seconds;
             }
         });
+    }, [originalReviews, selectedSort]);
 
+    useEffect(() => {
+        const sortedReviews = sortReviews();
         const filteredReviews = sortedReviews.filter(v => !netabare ? !v.Netabare : v.Netabare);
-
         setReviews(filteredReviews);
-    }, [netabare, selectedSort])
+
+    }, [netabare, selectedSort, sortReviews]);
 
     useEffect(() => {
         const fetchIsLiked = async () => {
@@ -176,7 +183,7 @@ export default function MovieDetail({ route, navigation }) {
                 ))}
             </ScrollView>
             <View style={style.container2}>
-                <TouchableOpacity style={style.button} onPress={() => moveToCreateReviewScreen() }>
+                <TouchableOpacity style={style.button} onPress={() => moveToCreateReviewScreen()}>
                     <AntDesign name="pluscircleo" size={24} color="white" />
                 </TouchableOpacity>
             </View>
