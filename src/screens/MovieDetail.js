@@ -8,7 +8,6 @@ import { UserContext } from "../context/UserContext";
 import SelectDropdown from 'react-native-select-dropdown'
 
 const db = getFirestore()
-
 export default function MovieDetail({ route, navigation }) {
     const { movie } = route.params;
     const [reviews, setReviews] = useState([]);
@@ -18,6 +17,10 @@ export default function MovieDetail({ route, navigation }) {
     const { user } = useContext(UserContext);
     const countries = ["古い順", "新しい順"]
     const [selectedSort, setSelectedSort] = useState(countries[1])
+
+    const moveToCreateReviewScreen = () => {
+        navigation.navigate('CreateReviewScreen', { movie })
+    }
 
 
     const toggleSwitch = () => {
@@ -144,7 +147,7 @@ export default function MovieDetail({ route, navigation }) {
                 </View>
                 {originalReviews.some(v => v.Netabare || !v.Netabare) ?
                     <View style={style.netabare}>
-                        <View style={{flexDirection:'row',alignItems:'center'}}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={{ color: 'white', fontSize: 20 }}>ネタバレ</Text>
                             <Switch
                                 trackColor={{ false: '#767577', true: '#81b0ff' }}
@@ -173,7 +176,7 @@ export default function MovieDetail({ route, navigation }) {
                 ))}
             </ScrollView>
             <View style={style.container2}>
-                <TouchableOpacity style={style.button} onPress={() => { navigation.navigate('CreateReviewScreen', { movie }) }}>
+                <TouchableOpacity style={style.button} onPress={() => moveToCreateReviewScreen() }>
                     <AntDesign name="pluscircleo" size={24} color="white" />
                 </TouchableOpacity>
             </View>
@@ -224,7 +227,7 @@ const style = StyleSheet.create({
     netabare: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent:'space-evenly',
+        justifyContent: 'space-evenly',
         marginBottom: 20
     },
     noReview: {

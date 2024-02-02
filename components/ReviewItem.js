@@ -6,7 +6,7 @@ import { UserContext } from "../src/context/UserContext";
 import { cancelAlert } from "../src/utils/showAlert";
 const db = getFirestore();
 
-const ReviewItem = ({ review,navigation }) => {
+const ReviewItem = ({ review, navigation }) => {
     const userAvatarSource = review.userInfo.photoURL
         ? { uri: review.userInfo.photoURL }
         : { uri: 'https://sp-ao.shortpixel.ai/client/q_lossless,ret_img,w_250/https://miamistonesource.com/wp-content/uploads/2018/05/no-avatar-25359d55aa3c93ab3466622fd2ce712d1.jpg' };
@@ -23,6 +23,10 @@ const ReviewItem = ({ review,navigation }) => {
     const formatDate = `${year}/${month}/${day} ${hours}:${minutes}:${secondsFormatted}`;
 
     const { user } = useContext(UserContext);
+
+    const moveToUserDetailScreen = () => {
+        navigation.navigate("UserDetailScreen", { uid: review.userInfo.uid })
+    }
 
     const handleDelete = () => {
         cancelAlert("確認", "本当に削除しますか？", async () => {
@@ -45,7 +49,7 @@ const ReviewItem = ({ review,navigation }) => {
             </View>
             <View style={styles.bottomContainer}>
                 <View style={styles.userInfoContainer}>
-                    <TouchableHighlight onPress={() => {navigation.navigate("UserDetailScreen",{uid:review.userInfo.uid})}}>
+                    <TouchableHighlight onPress={() => moveToUserDetailScreen()}>
                         <Image source={userAvatarSource} style={styles.userAvatar} />
                     </TouchableHighlight>
                     <View style={styles.nameAndIcon}>
