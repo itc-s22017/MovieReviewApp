@@ -10,6 +10,10 @@ const MovieFlatList = (props) => {
 
   const [Movies, setMovies] = useState([]);
 
+  const moveToDetail = (item) => {
+    navigation.navigate("MovieDetail", { movie: item })
+  }
+
 
   useEffect(() => {
     async function getMovies() {
@@ -37,7 +41,7 @@ const MovieFlatList = (props) => {
         horizontal={true}
         flashScrollIndicators
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => navigation.navigate("MovieDetail", { movie: item })}>
+          <TouchableOpacity onPress={() => moveToDetail(item)}>
             <View style={style.movieContainer}>
               <Poster posterPath={item.poster_path} imageWidth={300} imageHeight={200}></Poster>
               <Text numberOfLines={1} style={style.movieTitle}>{item.title}</Text>

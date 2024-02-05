@@ -12,8 +12,9 @@ import { auth } from "./firebase";
 import { Platform } from "react-native";
 import { WEB_CLIENTID, IOS_CLIENTID, ANDROID_CLIENTID } from '@env'
 import { getFirestore, getDoc, doc,setDoc } from 'firebase/firestore';
+import { LogBox } from "react-native";
 
-
+LogBox.ignoreLogs(['Sending']);
 WebBrowser.maybeCompleteAuthSession();
 
 export default function App() {

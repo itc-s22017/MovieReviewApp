@@ -1,13 +1,13 @@
 import { Text, View, ScrollView, StyleSheet, TouchableOpacity, Switch } from "react-native";
 import Poster from "../../components/Poster";
 import { AntDesign, FontAwesome } from '@expo/vector-icons';
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { getFirestore, collection, query, where, getDoc, doc, orderBy, updateDoc, onSnapshot } from 'firebase/firestore';
 import ReviewItem from "../../components/ReviewItem";
 import { UserContext } from "../context/UserContext";
+import SelectDropdown from 'react-native-select-dropdown'
 
 const db = getFirestore()
-
 export default function MovieDetail({ route, navigation }) {
     const { movie } = route.params;
     const [reviews, setReviews] = useState([]);
@@ -15,13 +15,20 @@ export default function MovieDetail({ route, navigation }) {
     const [netabare, setNetabare] = useState(false);
     const [liked, setLiked] = useState(null)
     const { user } = useContext(UserContext);
+    const countries = ["古い順", "新しい順", "評価が高い順", "評価が低い順"]
+    const [selectedSort, setSelectedSort] = useState(countries[1])
+
+    const moveToCreateReviewScreen = () => {
+        navigation.navigate('CreateReviewScreen', { movie })
+    }
 
     const toggleSwitch = () => {
         setNetabare(previousState => !previousState);
-        const filteredReviews = originalReviews.filter(v => netabare ? !v.Netabare : v.Netabare);
-        setReviews(filteredReviews);
     }
 
+    const handleSortChange = (selectedItem) => {
+        setSelectedSort(selectedItem)
+    }
 
     const onClickStar = async () => {
         try {
@@ -35,7 +42,7 @@ export default function MovieDetail({ route, navigation }) {
                 await updateDoc(userRef, { likes: updatedLikes });
                 setLiked(updatedLikes);
             } else {
-                const updatedLikes = [...currentLikes, movie.id]
+                const updatedLikes = [...currentLikes, movie.id];
 
                 await updateDoc(userRef, { likes: updatedLikes });
                 setLiked(updatedLikes);
@@ -44,6 +51,28 @@ export default function MovieDetail({ route, navigation }) {
             console.log(e)
         }
     }
+
+    const sortReviews = useCallback(() => {
+        return [...originalReviews].sort((a, b) => {
+            switch (selectedSort) {
+                case "古い順":
+                    return a.Create_at.seconds - b.Create_at.seconds;
+                case "新しい順":
+                    return b.Create_at.seconds - a.Create_at.seconds;
+                case "評価が高い順":
+                    return b.Star - a.Star || b.Create_at.seconds - a.Create_at.seconds;
+                case "評価が低い順":
+                    return a.Star - b.Star || b.Create_at.seconds - a.Create_at.seconds;
+            }
+        });
+    }, [originalReviews, selectedSort]);
+
+    useEffect(() => {
+        const sortedReviews = sortReviews();
+        const filteredReviews = sortedReviews.filter(v => !netabare ? !v.Netabare : v.Netabare);
+        setReviews(filteredReviews);
+
+    }, [netabare, selectedSort, sortReviews]);
 
     useEffect(() => {
         const fetchIsLiked = async () => {
@@ -125,14 +154,26 @@ export default function MovieDetail({ route, navigation }) {
                 </View>
                 {originalReviews.some(v => v.Netabare || !v.Netabare) ?
                     <View style={style.netabare}>
-                        <Text style={{ color: 'white', fontSize: 20 }}>ネタバレ</Text>
-                        <Switch
-                            trackColor={{ false: '#767577', true: '#81b0ff' }}
-                            thumbColor={netabare ? '#f5dd4b' : '#f4f3f4'}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={toggleSwitch}
-                            value={netabare}
-                            style={style.switch}
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={{ color: 'white', fontSize: 20 }}>ネタバレ</Text>
+                            <Switch
+                                trackColor={{ false: '#767577', true: '#81b0ff' }}
+                                thumbColor={netabare ? '#f5dd4b' : '#f4f3f4'}
+                                ios_backgroundColor="#3e3e3e"
+                                onValueChange={toggleSwitch}
+                                value={netabare}
+                                style={style.switch}
+                            />
+                        </View>
+                        <SelectDropdown
+                            data={countries}
+                            onSelect={(selectedItem) => {
+                                handleSortChange(selectedItem)
+                            }}
+                            buttonTextAfterSelection={(selectedItem) => {
+                                return selectedItem
+                            }}
+                            defaultValue={selectedSort}
                         />
                     </View> : <Text style={style.noReview}>レビューがありません</Text>
                 }
@@ -142,7 +183,7 @@ export default function MovieDetail({ route, navigation }) {
                 ))}
             </ScrollView>
             <View style={style.container2}>
-                <TouchableOpacity style={style.button} onPress={() => { navigation.navigate('CreateReviewScreen', { movie }) }}>
+                <TouchableOpacity style={style.button} onPress={() => moveToCreateReviewScreen()}>
                     <AntDesign name="pluscircleo" size={24} color="white" />
                 </TouchableOpacity>
             </View>
@@ -188,14 +229,12 @@ const style = StyleSheet.create({
         height: 60,
         justifyContent: 'center',
         alignItems: 'center',
-        opacity: 0.4
+        opacity: 0.4,
     },
     netabare: {
         flexDirection: 'row',
-        width: '80%',
         alignItems: 'center',
-        justifyContent: 'center',
-        marginTop: 10,
+        justifyContent: 'space-evenly',
         marginBottom: 20
     },
     noReview: {
@@ -207,7 +246,7 @@ const style = StyleSheet.create({
     },
     star: {
         marginLeft: 8,
-        marginTop:10,
+        marginTop: 10,
         fontSize: 24,
         color: "yellow",
 
