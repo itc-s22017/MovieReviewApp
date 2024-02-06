@@ -36,6 +36,7 @@ const CreateReviewScreen = ({ route, navigation }) => {
                 Star: score,
                 Create_at: Timestamp.now(),
                 Netabare: isEnabled,
+                Likes:[]
             });
             navigation.goBack();
         } catch (e) {
@@ -78,7 +79,7 @@ const CreateReviewScreen = ({ route, navigation }) => {
                         value={text}
                     />
                 </View>
-                <Pressable style={style.button} onPress={() => { }}>
+                <Pressable style={style.button} >
                     <Text style={style.text} onPress={createReview}>投稿する</Text>
                 </Pressable>
             </ScrollView>
