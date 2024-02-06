@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, Text, Image, Button, TouchableHighlight } from "react-native";
-import { deleteDoc, getFirestore, doc, getDoc, runTransaction, onSnapshot } from "firebase/firestore"
+import { deleteDoc, getFirestore, doc, getDoc, runTransaction, onSnapshot, updateDoc } from "firebase/firestore"
 import Stars from "./Stars";
 import { UserContext } from "../src/context/UserContext";
 import { cancelAlert } from "../src/utils/showAlert";
@@ -33,7 +33,31 @@ const ReviewItem = ({ review, navigation }) => {
 
     const handleDelete = () => {
         cancelAlert("確認", "本当に削除しますか？", async () => {
-            await deleteDoc(doc(db, "reviews", review.id));
+            const reviewRef = doc(db, "reviews", review.id)
+            try {
+                const reviewDoc = await getDoc(reviewRef);
+
+                if (reviewDoc.exists()) {
+                    const reviewDataLikesLen = reviewDoc.data().Likes.length
+                    const userRef = doc(db, "users", review.userInfo.uid);
+                    const userDoc = await getDoc(userRef);
+
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        if (reviewDataLikesLen !== 0) {
+                            const newLikes = userData.totalReviewLikes - reviewDataLikesLen;
+                            await updateDoc(userRef, { totalReviewLikes: newLikes })
+                        }
+                        await deleteDoc(reviewRef);
+                    } else {
+                        console.log("ユーザーが存在しません。");
+                    }
+                } else {
+                    console.log("レビューが存在しません。");
+                }
+            } catch (error) {
+                console.error("エラー:", error);
+            }
         })
     }
 
