@@ -123,7 +123,6 @@ export default function MovieDetail({ route, navigation }) {
                     setOriginalReviews(reviewsData);
                     setNetabare(false)
                     setReviews(reviewsData.filter(v => !v.Netabare));
-
                 });
 
                 return () => unsubscribe();
@@ -179,7 +178,7 @@ export default function MovieDetail({ route, navigation }) {
                 }
 
                 {reviews.map((review, index) => (
-                    <ReviewItem key={index} review={review} navigation={navigation} />
+                    <ReviewItem key={review.Create_at} review={review} navigation={navigation}/>
                 ))}
             </ScrollView>
             <View style={style.container2}>
