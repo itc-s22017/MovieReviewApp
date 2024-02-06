@@ -77,6 +77,7 @@ const CreateReviewScreen = ({ route, navigation }) => {
                         placeholder="感想を記入してください"
                         onChangeText={handleInputChange}
                         value={text}
+                        autoFocus={true}
                     />
                 </View>
                 <Pressable style={style.button} >
