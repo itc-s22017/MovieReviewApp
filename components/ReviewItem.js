@@ -1,12 +1,15 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { View, StyleSheet, Text, Image, Button, TouchableHighlight } from "react-native";
-import { deleteDoc, getFirestore, doc } from "firebase/firestore"
+import { deleteDoc, getFirestore, doc, getDoc, runTransaction, onSnapshot, updateDoc } from "firebase/firestore"
 import Stars from "./Stars";
 import { UserContext } from "../src/context/UserContext";
 import { cancelAlert } from "../src/utils/showAlert";
+import { AntDesign } from '@expo/vector-icons';
 const db = getFirestore();
 
 const ReviewItem = ({ review, navigation }) => {
+    const [isLiked, setIsLiked] = useState(null)
+    const [likesCount, setLikesCount] = useState(0)
     const userAvatarSource = review.userInfo.photoURL
         ? { uri: review.userInfo.photoURL }
         : { uri: 'https://sp-ao.shortpixel.ai/client/q_lossless,ret_img,w_250/https://miamistonesource.com/wp-content/uploads/2018/05/no-avatar-25359d55aa3c93ab3466622fd2ce712d1.jpg' };
@@ -30,9 +33,89 @@ const ReviewItem = ({ review, navigation }) => {
 
     const handleDelete = () => {
         cancelAlert("確認", "本当に削除しますか？", async () => {
-            await deleteDoc(doc(db, "reviews", review.id));
+            const reviewRef = doc(db, "reviews", review.id)
+            try {
+                const reviewDoc = await getDoc(reviewRef);
+
+                if (reviewDoc.exists()) {
+                    const reviewDataLikesLen = reviewDoc.data().Likes.length
+                    const userRef = doc(db, "users", review.userInfo.uid);
+                    const userDoc = await getDoc(userRef);
+
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        if (reviewDataLikesLen !== 0) {
+                            const newLikes = userData.totalReviewLikes - reviewDataLikesLen;
+                            await updateDoc(userRef, { totalReviewLikes: newLikes })
+                        }
+                        await deleteDoc(reviewRef);
+                    } else {
+                        console.log("ユーザーが存在しません。");
+                    }
+                } else {
+                    console.log("レビューが存在しません。");
+                }
+            } catch (error) {
+                console.error("エラー:", error);
+            }
         })
     }
+
+    const handleLike = async () => {
+        const userRef = doc(db, 'users', review.userInfo.uid);
+        const reviewRef = doc(db, 'reviews', review.id);
+
+        try {
+            await runTransaction(db, async (transaction) => {
+                const userDoc = await getDoc(userRef);
+                const reviewDoc = await getDoc(reviewRef);
+
+                if (!isLiked) {
+                    const newLikes = userDoc.data().totalReviewLikes + 1;
+                    transaction.update(userRef, { totalReviewLikes: newLikes });
+
+                    const reviewLikes = reviewDoc.data().Likes || [];
+                    reviewLikes.push(user.uid);
+                    transaction.update(reviewRef, { Likes: reviewLikes });
+                    setIsLiked(true);
+                    setLikesCount(prev => prev + 1)
+                } else {
+                    const newLikes = userDoc.data().totalReviewLikes - 1;
+                    transaction.update(userRef, { totalReviewLikes: newLikes });
+
+                    const reviewLikes = reviewDoc.data().Likes || [];
+                    const updatedLikes = reviewLikes.filter(uid => uid !== user.uid);
+                    transaction.update(reviewRef, { Likes: updatedLikes });
+                    setIsLiked(false);
+                    setLikesCount(prev => prev - 1)
+                }
+            });
+        } catch (error) {
+            console.error('トランザクションエラー:', error);
+        }
+    };
+
+    const fetchIsLiked = async () => {
+        const reviewRef = doc(db, 'reviews', review.id);
+        const unsubscribe = onSnapshot(reviewRef, (docSnapshot) => {
+            if (docSnapshot.exists()) {
+                const data = docSnapshot.data();
+                const isLiked = data.Likes.includes(user.uid);
+                setIsLiked(isLiked);
+                setLikesCount(data.Likes.length);
+            } else {
+                // 'Likes'が配列でないか存在しない場合の処理
+                setIsLiked(false);
+            }
+        });
+
+        // 不要になった場合にリスナーを解除する
+        return () => unsubscribe();
+    }
+
+    useEffect(() => {
+        fetchIsLiked();
+    }, [])
 
     return (
         <View style={styles.container}>
@@ -57,6 +140,12 @@ const ReviewItem = ({ review, navigation }) => {
                     </View>
                 </View>
                 <Text style={styles.dateText}>{formatDate}</Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 10 }}>
+                {user.uid !== review.userInfo.uid ?
+                    <AntDesign name={isLiked ? "heart" : "hearto"} size={16} color="white" onPress={handleLike} /> : ''
+                }
+                <Text style={{ color: 'white', marginLeft: 5 }}>{likesCount}人が参考になったと言っています。</Text>
             </View>
         </View>
     );

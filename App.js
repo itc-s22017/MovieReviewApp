@@ -11,7 +11,7 @@ import {
 import { auth } from "./firebase";
 import { Platform } from "react-native";
 import { WEB_CLIENTID, IOS_CLIENTID, ANDROID_CLIENTID } from '@env'
-import { getFirestore, getDoc, doc,setDoc } from 'firebase/firestore';
+import { getFirestore, getDoc, doc, setDoc } from 'firebase/firestore';
 import { LogBox } from "react-native";
 
 LogBox.ignoreLogs(['Sending']);
@@ -48,9 +48,10 @@ export default function App() {
             const Data = {
               displayName: userData.displayName,
               email: userData.email,
-              photoURL:userData.photoURL,
-              uid:userData.uid,
-              likes:[]
+              photoURL: userData.photoURL,
+              uid: userData.uid,
+              likes: [],
+              totalReviewLikes: 0
             };
 
             await setDoc(userDocRef, Data);

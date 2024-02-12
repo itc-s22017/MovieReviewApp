@@ -47,7 +47,8 @@ const RegisterScreen = ({ navigation }) => {
                         email: user.email,
                         photoURL: user.photoURL,
                         uid: user.uid,
-                        likes:[]
+                        likes:[],
+                        totalReviewLikes:0
                     };
 
                     await setDoc(userDocRef, Data);

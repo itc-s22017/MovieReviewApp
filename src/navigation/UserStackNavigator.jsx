@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native";
 import SearchMovie from "../screens/SearchMovie";
 import CreateReviewScreen from "../screens/CreateReviewScreen";
 import { UserScreen } from "../screens/UserScreen";
+import Ranking from "../screens/Ranking";
 
 const Stack = createStackNavigator();
 const RootStack = createStackNavigator();
@@ -59,6 +60,17 @@ export const UserStack = () => {
                     headerTintColor: "#fff",
                     headerTitleAlign: "center",
                     // headerShown: false,
+                }}
+            />
+            <Stack.Screen
+                name="Ranking"
+                component={Ranking}
+                options={{
+                    headerStyle: {
+                        backgroundColor: "#202328",
+                    },
+                    headerTintColor: "#fff",
+                    headerTitleAlign: "center",
                 }}
             />
 
