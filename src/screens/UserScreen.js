@@ -20,6 +20,10 @@ export const UserScreen = ({ navigation, route }) => {
     : { uri: 'https://sp-ao.shortpixel.ai/client/q_lossless,ret_img,w_250/https://miamistonesource.com/wp-content/uploads/2018/05/no-avatar-25359d55aa3c93ab3466622fd2ce712d1.jpg' };
   const [commentedMovieId, setCommentedMovieId] = useState([])
 
+  const moveToRankingScreen = () => {
+    navigation.navigate("Ranking")
+  }
+
   useEffect(() => {
     const test = async () => {
       try {
@@ -67,9 +71,14 @@ export const UserScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Image source={userAvatarSource} style={styles.userAvatar} />
-        <Text style={styles.nameText}>{currentUserId.displayName}</Text>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Image source={userAvatarSource} style={styles.userAvatar} />
+          <Text style={styles.nameText}>{currentUserId.displayName}</Text>
+        </View>
+        <Pressable onPress={moveToRankingScreen}>
+          <Text style={styles.ranking}>ランキングを見る</Text>
+        </Pressable>
       </View>
       {!otherUserId &&
         <Pressable Pressable
@@ -125,5 +134,11 @@ const styles = StyleSheet.create({
   },
   nameText: {
     fontSize: 20
+  },
+  ranking: {
+    color: 'blue',
+    textDecorationStyle: 'solid',
+    textDecorationColor: 'blue',
+    textDecorationLine: 'underline'
   }
 });
