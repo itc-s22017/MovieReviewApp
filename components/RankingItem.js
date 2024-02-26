@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     },
     rank: {
         width: 30,
-        marginRight: 10,
+        marginRight: 5,
         fontWeight: 'bold',
     },
     infoContainer: {

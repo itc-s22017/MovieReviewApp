@@ -96,6 +96,7 @@ const LoginScreen = ({ navigation }) => {
                     placeholder="メールアドレスを入力してください"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    autoFocus={true}
                 />
             </View>
             <View style={{ marginBottom: 20 }}>

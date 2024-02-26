@@ -15,6 +15,8 @@ import { getFirestore, getDoc, doc, setDoc } from 'firebase/firestore';
 import { LogBox } from "react-native";
 
 LogBox.ignoreLogs(['Sending']);
+LogBox.ignoreLogs(['Firestore']);
+
 WebBrowser.maybeCompleteAuthSession();
 
 export default function App() {
